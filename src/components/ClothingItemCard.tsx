@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 interface ClothingItemCardProps {
   item: ClothingItem | null;
   className?: string;
+  onClick?: () => void;
 }
 
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -18,7 +19,7 @@ const CATEGORY_LABELS: Record<Category, string> = {
   ACCESSORY: '액세서리',
 };
 
-export function ClothingItemCard({ item, className }: ClothingItemCardProps) {
+export function ClothingItemCard({ item, className, onClick }: ClothingItemCardProps) {
   if (!item) return null;
 
   const Icon = getCategoryIcon(item.category);
@@ -26,10 +27,13 @@ export function ClothingItemCard({ item, className }: ClothingItemCardProps) {
 
   return (
     <motion.div
-      className={cn('flex flex-col items-center gap-2', className)}
+      className={cn('flex flex-col items-center gap-2', onClick && 'cursor-pointer', className)}
       whileHover={{ scale: 1.08, y: -4 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring' as const, stiffness: 400, damping: 17 }}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
     >
       <div
         className={cn(

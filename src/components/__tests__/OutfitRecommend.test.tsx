@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { OutfitRecommend } from '../OutfitRecommend';
 import type { OutfitRecommendation } from '@/types/outfit';
 import { recommendOutfit } from '@/lib/outfitEngine';
@@ -17,6 +17,14 @@ vi.mock('framer-motion', () => ({
     },
   }),
   AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
+}));
+
+// ClothingPhotoModal mock
+vi.mock('../ClothingPhotoModal', () => ({
+  ClothingPhotoModal: ({ item, onClose }: { item: unknown; onClose: () => void }) => {
+    if (!item) return null;
+    return <div data-testid="photo-modal"><button onClick={onClose}>닫기</button></div>;
+  },
 }));
 
 function getMockRecommendation(weatherData = mockWeatherMild): OutfitRecommendation {
@@ -60,5 +68,19 @@ describe('OutfitRecommend', () => {
   it('recommendation이 null이면 안내 문구를 표시한다', () => {
     render(<OutfitRecommend recommendation={null} />);
     expect(screen.getByText('날씨 데이터를 불러오는 중...')).toBeInTheDocument();
+  });
+
+  it('의류 카드 클릭 시 사진 모달이 열린다', () => {
+    const rec = getMockRecommendation();
+    render(<OutfitRecommend recommendation={rec} />);
+
+    // 모달이 처음엔 없음
+    expect(screen.queryByTestId('photo-modal')).not.toBeInTheDocument();
+
+    // 아이템 클릭
+    fireEvent.click(screen.getByText(rec.top.name));
+
+    // 모달 표시됨
+    expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
   });
 });

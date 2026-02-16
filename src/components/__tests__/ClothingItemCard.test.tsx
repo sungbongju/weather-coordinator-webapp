@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ClothingItemCard } from '../ClothingItemCard';
 import type { ClothingItem } from '@/types/outfit';
 
@@ -52,5 +52,17 @@ describe('ClothingItemCard', () => {
   it('카테고리 라벨을 표시한다', () => {
     render(<ClothingItemCard item={mockItem} />);
     expect(screen.getByText('아우터')).toBeInTheDocument();
+  });
+
+  it('onClick이 전달되면 클릭 시 호출된다', () => {
+    const onClick = vi.fn();
+    render(<ClothingItemCard item={mockItem} onClick={onClick} />);
+    fireEvent.click(screen.getByText('패딩'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('onClick이 전달되면 button role을 가진다', () => {
+    render(<ClothingItemCard item={mockItem} onClick={() => {}} />);
+    expect(screen.getByRole('button')).toBeInTheDocument();
   });
 });
