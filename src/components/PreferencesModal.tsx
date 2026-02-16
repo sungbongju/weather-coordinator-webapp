@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, RotateCcw, ThumbsDown } from 'lucide-react';
-import { getItemsByCategory } from '@/lib/clothingData';
+import { getItemsByCategory, filterByGender } from '@/lib/clothingData';
 import { getCategoryIcon, getCategoryColor } from '@/lib/weatherMapping';
 import { usePreferenceStore } from '@/store/preferenceStore';
 import { cn } from '@/lib/cn';
@@ -24,7 +24,8 @@ const CATEGORIES: { key: Category; label: string }[] = [
 function CategorySection({ category, label }: { category: Category; label: string }) {
   const toggleDislike = usePreferenceStore((s) => s.toggleDislike);
   const isDisliked = usePreferenceStore((s) => s.isDisliked);
-  const items = getItemsByCategory(category);
+  const gender = usePreferenceStore((s) => s.preferences.gender);
+  const items = filterByGender(getItemsByCategory(category), gender);
   const Icon = getCategoryIcon(category);
   const color = getCategoryColor(category);
 

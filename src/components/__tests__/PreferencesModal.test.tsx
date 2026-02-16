@@ -20,6 +20,7 @@ vi.mock('framer-motion', () => ({
 const mockToggleDislike = vi.fn();
 const mockIsDisliked = vi.fn((_id: string) => false);
 const mockClearAllDislikes = vi.fn();
+let mockGender: 'M' | 'F' | null = null;
 
 vi.mock('@/store/preferenceStore', () => ({
   usePreferenceStore: (selector: (s: Record<string, unknown>) => unknown) =>
@@ -27,7 +28,7 @@ vi.mock('@/store/preferenceStore', () => ({
       toggleDislike: mockToggleDislike,
       isDisliked: mockIsDisliked,
       clearAllDislikes: mockClearAllDislikes,
-      preferences: { dislikedItemIds: [] },
+      preferences: { dislikedItemIds: [], gender: mockGender },
     }),
 }));
 
@@ -36,6 +37,7 @@ describe('PreferencesModal', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGender = null;
   });
 
   it('isOpen=false일 때 렌더하지 않는다', () => {
@@ -86,5 +88,29 @@ describe('PreferencesModal', () => {
     render(<PreferencesModal isOpen={true} onClose={onClose} />);
     fireEvent.click(screen.getByTestId('modal-backdrop'));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('gender=M일 때 여성 전용 아이템이 표시되지 않는다', () => {
+    mockGender = 'M';
+    render(<PreferencesModal isOpen={true} onClose={onClose} />);
+    expect(screen.queryByText('블라우스')).not.toBeInTheDocument();
+    expect(screen.queryByText('크롭탑')).not.toBeInTheDocument();
+    expect(screen.queryByText('숏팬츠/치마')).not.toBeInTheDocument();
+  });
+
+  it('gender=F일 때 여성 전용 아이템이 표시된다', () => {
+    mockGender = 'F';
+    render(<PreferencesModal isOpen={true} onClose={onClose} />);
+    expect(screen.getByText('블라우스')).toBeInTheDocument();
+    expect(screen.getByText('크롭탑')).toBeInTheDocument();
+    expect(screen.getByText('숏팬츠/치마')).toBeInTheDocument();
+  });
+
+  it('gender=null일 때 모든 아이템이 표시된다', () => {
+    mockGender = null;
+    render(<PreferencesModal isOpen={true} onClose={onClose} />);
+    expect(screen.getByText('블라우스')).toBeInTheDocument();
+    expect(screen.getByText('크롭탑')).toBeInTheDocument();
+    expect(screen.getByText('숏팬츠/치마')).toBeInTheDocument();
   });
 });
