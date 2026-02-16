@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { OutfitRecommend } from '../OutfitRecommend';
 import type { OutfitRecommendation } from '@/types/outfit';
 import { recommendOutfit } from '@/lib/outfitEngine';
-import { mockWeatherMild, mockWeatherWarm, mockWeatherRainyMild } from '@/__tests__/fixtures/weatherData';
+import { mockWeatherMild, mockWeatherWarm, mockWeatherFreezing } from '@/__tests__/fixtures/weatherData';
 
 // framer-motion Proxy mock
 vi.mock('framer-motion', () => ({
@@ -25,6 +25,17 @@ vi.mock('../ClothingPhotoModal', () => ({
     if (!item) return null;
     return <div data-testid="photo-modal"><button onClick={onClose}>닫기</button></div>;
   },
+}));
+
+// preferenceStore mock
+const mockToggleDislike = vi.fn();
+const mockIsDisliked = vi.fn(() => false);
+vi.mock('@/store/preferenceStore', () => ({
+  usePreferenceStore: (selector: (s: Record<string, unknown>) => unknown) =>
+    selector({
+      toggleDislike: mockToggleDislike,
+      isDisliked: mockIsDisliked,
+    }),
 }));
 
 function getMockRecommendation(weatherData = mockWeatherMild): OutfitRecommendation {
@@ -82,5 +93,26 @@ describe('OutfitRecommend', () => {
 
     // 모달 표시됨
     expect(screen.getByTestId('photo-modal')).toBeInTheDocument();
+  });
+
+  it('각 의류 카드에 싫어요 버튼이 표시된다', () => {
+    const rec = getMockRecommendation();
+    render(<OutfitRecommend recommendation={rec} />);
+    const dislikeBtns = screen.getAllByTestId('dislike-btn');
+    // outer + top + bottom + shoes (outer가 있는 MILD)
+    const itemCount = [rec.outer, rec.top, rec.bottom, rec.shoes].filter(Boolean).length;
+    expect(dislikeBtns.length).toBe(itemCount);
+  });
+
+  it('safetyOverride가 적용되면 경고 배너를 표시한다', () => {
+    const rec = getMockRecommendation();
+    rec.safetyOverride = {
+      applied: true,
+      reason: '체감온도 -15°C — 안전을 위해 롱패딩을 추천합니다',
+      overriddenItemId: 'outer-long-puffer',
+    };
+    render(<OutfitRecommend recommendation={rec} />);
+    expect(screen.getByTestId('safety-override-banner')).toBeInTheDocument();
+    expect(screen.getByText('체감온도 -15°C — 안전을 위해 롱패딩을 추천합니다')).toBeInTheDocument();
   });
 });

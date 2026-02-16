@@ -21,20 +21,20 @@ describe('clothingData', () => {
     }
   });
 
-  it('OUTER 카테고리에 8개 아이템이 있어야 한다', () => {
-    expect(getItemsByCategory('OUTER')).toHaveLength(8);
+  it('OUTER 카테고리에 11개 아이템이 있어야 한다', () => {
+    expect(getItemsByCategory('OUTER')).toHaveLength(11);
   });
 
-  it('TOP 카테고리에 10개 아이템이 있어야 한다', () => {
-    expect(getItemsByCategory('TOP')).toHaveLength(10);
+  it('TOP 카테고리에 12개 아이템이 있어야 한다', () => {
+    expect(getItemsByCategory('TOP')).toHaveLength(12);
   });
 
-  it('BOTTOM 카테고리에 7개 아이템이 있어야 한다', () => {
-    expect(getItemsByCategory('BOTTOM')).toHaveLength(7);
+  it('BOTTOM 카테고리에 9개 아이템이 있어야 한다', () => {
+    expect(getItemsByCategory('BOTTOM')).toHaveLength(9);
   });
 
-  it('SHOES 카테고리에 6개 아이템이 있어야 한다', () => {
-    expect(getItemsByCategory('SHOES')).toHaveLength(6);
+  it('SHOES 카테고리에 7개 아이템이 있어야 한다', () => {
+    expect(getItemsByCategory('SHOES')).toHaveLength(7);
   });
 
   it('ACCESSORY 카테고리에 10개 아이템이 있어야 한다', () => {

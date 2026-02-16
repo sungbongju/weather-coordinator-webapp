@@ -5,15 +5,17 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import { useWeather } from '@/hooks/useWeather';
 import { useOutfit } from '@/hooks/useOutfit';
 import { useLocationStore } from '@/store/locationStore';
+import { usePreferenceStore } from '@/store/preferenceStore';
 import { getWeatherBackground } from '@/lib/weatherMapping';
 import { WeatherCard } from '@/components/WeatherCard';
 import { OutfitRecommend } from '@/components/OutfitRecommend';
 import { LocationBar } from '@/components/LocationBar';
 import { ErrorState } from '@/components/ErrorState';
 import { CitySearchModal } from '@/components/CitySearchModal';
+import { PreferencesModal } from '@/components/PreferencesModal';
 import { cn } from '@/lib/cn';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Settings } from 'lucide-react';
 import type { CitySearchResult } from '@/types/location';
 
 const pageVariants = {
@@ -44,13 +46,22 @@ export default function Home() {
     hydrateFromStorage,
   } = useLocationStore();
 
+  // Preference store
+  const {
+    isPreferencesModalOpen,
+    openPreferencesModal,
+    closePreferencesModal,
+    hydrateFromStorage: hydratePreferences,
+  } = usePreferenceStore();
+
   // GPS geolocation (항상 실행, fallback 용도)
   const { location: gpsLocation, isLoading: geoLoading } = useGeolocation();
 
   // localStorage에서 복원
   useEffect(() => {
     hydrateFromStorage();
-  }, [hydrateFromStorage]);
+    hydratePreferences();
+  }, [hydrateFromStorage, hydratePreferences]);
 
   // 유효 위치 결정: store 우선, 없으면 GPS
   const effectiveLocation = useMemo(() => {
@@ -114,16 +125,26 @@ export default function Home() {
       >
         {/* 헤더 */}
         <motion.div className="mb-2" variants={sectionVariants}>
-          <div className="flex items-center gap-2">
-            <h1 className="text-4xl font-extrabold text-gradient-primary">
-              WeatherFit
-            </h1>
-            <motion.div
-              animate={{ rotate: [0, -8, 8, -8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h1 className="text-4xl font-extrabold text-gradient-primary">
+                WeatherFit
+              </h1>
+              <motion.div
+                animate={{ rotate: [0, -8, 8, -8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Sparkles size={24} className="text-accent" />
+              </motion.div>
+            </div>
+            <button
+              onClick={openPreferencesModal}
+              aria-label="옷장 설정"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
+              data-testid="preferences-btn"
             >
-              <Sparkles size={24} className="text-accent" />
-            </motion.div>
+              <Settings size={20} />
+            </button>
           </div>
           <p className="mt-1 text-white/80">오늘 뭐 입지?</p>
         </motion.div>
@@ -178,6 +199,12 @@ export default function Home() {
         onClose={closeSearchModal}
         onSelectCity={handleSelectCity}
         onSelectCurrentLocation={handleSelectCurrentLocation}
+      />
+
+      {/* 옷장 설정 모달 */}
+      <PreferencesModal
+        isOpen={isPreferencesModalOpen}
+        onClose={closePreferencesModal}
       />
     </div>
   );

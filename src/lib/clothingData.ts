@@ -1,6 +1,6 @@
 import type { ClothingItem, Category, TempLevel } from '@/types/outfit';
 
-// === 아우터 (OUTER) — 8종 ===
+// === 아우터 (OUTER) — 11종 ===
 const outerItems: ClothingItem[] = [
   {
     id: 'outer-long-puffer',
@@ -26,7 +26,7 @@ const outerItems: ClothingItem[] = [
     nameEn: 'Coat',
     category: 'OUTER',
     imageUrl: '/assets/clothing/outer/coat.webp',
-    tempLevels: ['COLD'],
+    tempLevels: ['FREEZING', 'COLD'],
     tags: ['포멀', '겨울'],
   },
   {
@@ -74,9 +74,36 @@ const outerItems: ClothingItem[] = [
     tempLevels: ['CHILLY', 'MILD', 'WARM', 'COLD'],
     tags: ['비', '방수'],
   },
+  {
+    id: 'outer-long-coat',
+    name: '롱코트',
+    nameEn: 'Long Wool Coat',
+    category: 'OUTER',
+    imageUrl: '/assets/clothing/outer/long-coat.webp',
+    tempLevels: ['FREEZING', 'COLD'],
+    tags: ['포멀', '겨울'],
+  },
+  {
+    id: 'outer-fleece-jacket',
+    name: '플리스자켓',
+    nameEn: 'Fleece Jacket',
+    category: 'OUTER',
+    imageUrl: '/assets/clothing/outer/fleece-jacket.webp',
+    tempLevels: ['COLD', 'CHILLY'],
+    tags: ['캐주얼', '방한'],
+  },
+  {
+    id: 'outer-light-cardigan',
+    name: '얇은 가디건',
+    nameEn: 'Light Cardigan',
+    category: 'OUTER',
+    imageUrl: '/assets/clothing/outer/light-cardigan.webp',
+    tempLevels: ['MILD', 'WARM'],
+    tags: ['캐주얼', '레이어링'],
+  },
 ];
 
-// === 상의 (TOP) — 10종 ===
+// === 상의 (TOP) — 12종 ===
 const topItems: ClothingItem[] = [
   {
     id: 'top-heattech',
@@ -168,9 +195,27 @@ const topItems: ClothingItem[] = [
     tempLevels: ['SCORCHING'],
     tags: ['시원', '여름'],
   },
+  {
+    id: 'top-turtleneck',
+    name: '터틀넥',
+    nameEn: 'Turtleneck',
+    category: 'TOP',
+    imageUrl: '/assets/clothing/top/turtleneck.webp',
+    tempLevels: ['FREEZING', 'COLD'],
+    tags: ['방한', '포멀'],
+  },
+  {
+    id: 'top-polo',
+    name: '폴로셔츠',
+    nameEn: 'Polo Shirt',
+    category: 'TOP',
+    imageUrl: '/assets/clothing/top/polo.webp',
+    tempLevels: ['WARM', 'HOT'],
+    tags: ['캐주얼', '깔끔'],
+  },
 ];
 
-// === 하의 (BOTTOM) — 7종 ===
+// === 하의 (BOTTOM) — 9종 ===
 const bottomItems: ClothingItem[] = [
   {
     id: 'bottom-fleece-pants',
@@ -235,9 +280,27 @@ const bottomItems: ClothingItem[] = [
     tempLevels: ['SCORCHING'],
     tags: ['시원', '여름'],
   },
+  {
+    id: 'bottom-wool-pants',
+    name: '울팬츠',
+    nameEn: 'Wool Pants',
+    category: 'BOTTOM',
+    imageUrl: '/assets/clothing/bottom/wool-pants.webp',
+    tempLevels: ['FREEZING'],
+    tags: ['방한', '포멀'],
+  },
+  {
+    id: 'bottom-jogger',
+    name: '조거팬츠',
+    nameEn: 'Jogger Pants',
+    category: 'BOTTOM',
+    imageUrl: '/assets/clothing/bottom/jogger.webp',
+    tempLevels: ['CHILLY', 'MILD', 'WARM'],
+    tags: ['캐주얼', '스포티'],
+  },
 ];
 
-// === 신발 (SHOES) — 6종 ===
+// === 신발 (SHOES) — 7종 ===
 const shoesItems: ClothingItem[] = [
   {
     id: 'shoes-boots',
@@ -292,6 +355,15 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/sandals.webp',
     tempLevels: ['HOT', 'SCORCHING'],
     tags: ['시원', '여름'],
+  },
+  {
+    id: 'shoes-fur-boots',
+    name: '퍼부츠',
+    nameEn: 'Fur Boots',
+    category: 'SHOES',
+    imageUrl: '/assets/clothing/shoes/fur-boots.webp',
+    tempLevels: ['FREEZING'],
+    tags: ['방한', '겨울'],
   },
 ];
 

@@ -54,6 +54,19 @@ export interface OutfitRecommendation {
   accessories: ClothingItem[];
   comment: string;                  // 한 줄 코멘트
   modifiers: ConditionModifiers;    // 적용된 조건들
+  safetyOverride?: SafetyOverride;  // 극한 날씨 안전 오버라이드
+}
+
+/** 사용자 의류 선호도 */
+export interface UserPreferences {
+  dislikedItemIds: string[];
+}
+
+/** 안전 오버라이드 (극한 날씨에서 선호도 무시) */
+export interface SafetyOverride {
+  applied: boolean;
+  reason: string;
+  overriddenItemId: string;
 }
 
 /** 코멘트 템플릿 구조 */

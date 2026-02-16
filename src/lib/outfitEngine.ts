@@ -4,6 +4,7 @@ import type {
   OutfitRecommendation,
   ConditionModifiers,
   ClothingItem,
+  UserPreferences,
 } from '@/types/outfit';
 import { getItemsForTempLevel, getItemById } from './clothingData';
 import { getRandomComment } from './comments';
@@ -38,14 +39,15 @@ export function getTempLevel(feelsLikeTemp: number): TempLevel {
 
 // === Step 2: 기본 코디 세트 선택 ===
 
-function pickFirst(items: ClothingItem[]): ClothingItem {
+function pickPreferred(items: ClothingItem[], dislikedIds: string[] = []): ClothingItem {
   if (items.length === 0) {
     throw new Error('No clothing items available');
   }
-  return items[0]!;
+  const preferred = items.filter(item => !dislikedIds.includes(item.id));
+  return preferred.length > 0 ? preferred[0]! : items[0]!;
 }
 
-export function getBaseOutfit(level: TempLevel): OutfitRecommendation {
+export function getBaseOutfit(level: TempLevel, dislikedIds: string[] = []): OutfitRecommendation {
   const outers = getItemsForTempLevel(level, 'OUTER');
   const tops = getItemsForTempLevel(level, 'TOP');
   const bottoms = getItemsForTempLevel(level, 'BOTTOM');
@@ -65,10 +67,10 @@ export function getBaseOutfit(level: TempLevel): OutfitRecommendation {
 
   return {
     tempLevel: level,
-    outer: needsOuter && outers.length > 0 ? pickFirst(outers) : null,
-    top: pickFirst(tops),
-    bottom: pickFirst(bottoms),
-    shoes: pickFirst(shoes),
+    outer: needsOuter && outers.length > 0 ? pickPreferred(outers, dislikedIds) : null,
+    top: pickPreferred(tops, dislikedIds),
+    bottom: pickPreferred(bottoms, dislikedIds),
+    shoes: pickPreferred(shoes, dislikedIds),
     accessories: [],
     comment: '',
     modifiers: defaultModifiers,
@@ -142,12 +144,64 @@ export function applyConditionModifiers(
   return result;
 }
 
-// === Step 4: 전체 파이프라인 ===
+// === Step 4: 극한 날씨 안전 오버라이드 ===
 
-export function recommendOutfit(weather: WeatherData): OutfitRecommendation {
+const EXTREME_COLD_THRESHOLD = -10; // °C feelsLike
+
+const EXTREME_COLD_ESSENTIAL_IDS = [
+  'outer-long-puffer',
+  'outer-short-puffer',
+  'outer-long-coat',
+  'outer-coat',
+];
+
+function applySafetyOverride(
+  outfit: OutfitRecommendation,
+  weather: WeatherData,
+  dislikedIds: string[],
+): OutfitRecommendation {
+  if (weather.feelsLike > EXTREME_COLD_THRESHOLD) return outfit;
+
+  // 현재 아우터가 이미 필수 방한 아이템이면 통과
+  if (outfit.outer && EXTREME_COLD_ESSENTIAL_IDS.includes(outfit.outer.id)) {
+    return outfit;
+  }
+
+  // 필수 방한 아이템 중 하나를 강제 선택
+  const essentialItems = EXTREME_COLD_ESSENTIAL_IDS
+    .map(id => getItemById(id))
+    .filter((item): item is ClothingItem => item !== undefined);
+
+  // 싫어하지 않는 것 우선, 없으면 첫 번째
+  const preferred = essentialItems.filter(i => !dislikedIds.includes(i.id));
+  const overrideItem = preferred[0] ?? essentialItems[0];
+
+  if (overrideItem) {
+    return {
+      ...outfit,
+      outer: overrideItem,
+      safetyOverride: {
+        applied: true,
+        reason: `체감온도 ${Math.round(weather.feelsLike)}°C — 안전을 위해 ${overrideItem.name} 추천`,
+        overriddenItemId: overrideItem.id,
+      },
+    };
+  }
+
+  return outfit;
+}
+
+// === Step 5: 전체 파이프라인 ===
+
+export function recommendOutfit(
+  weather: WeatherData,
+  preferences?: UserPreferences,
+): OutfitRecommendation {
+  const dislikedIds = preferences?.dislikedItemIds ?? [];
   const tempLevel = getTempLevel(weather.feelsLike);
-  const baseOutfit = getBaseOutfit(tempLevel);
+  const baseOutfit = getBaseOutfit(tempLevel, dislikedIds);
   const modified = applyConditionModifiers(baseOutfit, weather);
-  modified.comment = getRandomComment(tempLevel);
-  return modified;
+  const safe = applySafetyOverride(modified, weather, dislikedIds);
+  safe.comment = getRandomComment(tempLevel);
+  return safe;
 }

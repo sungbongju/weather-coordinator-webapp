@@ -153,6 +153,52 @@ describe('outfitEngine', () => {
     });
   });
 
+  // === 선호도 반영 추천 ===
+  describe('preference-aware recommendation', () => {
+    it('싫어하는 아이템은 추천에서 제외된다', () => {
+      const prefs = { dislikedItemIds: ['outer-long-puffer'] };
+      const result = recommendOutfit(mockWeatherFreezing, prefs);
+      expect(result.outer?.id).not.toBe('outer-long-puffer');
+    });
+
+    it('카테고리의 모든 아이템을 싫어하면 첫 번째로 fallback', () => {
+      const allFreezingTopIds = ['top-heattech', 'top-knit', 'top-turtleneck'];
+      const prefs = { dislikedItemIds: allFreezingTopIds };
+      const result = recommendOutfit(mockWeatherFreezing, prefs);
+      expect(result.top).not.toBeNull();
+    });
+
+    it('극한 추위(-15°C) + 강풍 → 바람막이 대신 안전 오버라이드', () => {
+      // 극한 추위 + 바람 → modifier가 바람막이로 교체 → safety override가 필수 방한 아이템 강제
+      const extremeColdWindy = {
+        ...mockWeatherFreezing,
+        feelsLike: -15,
+        windSpeed: 35, // 강풍으로 바람막이 교체 유도
+      };
+      const result = recommendOutfit(extremeColdWindy);
+      expect(result.outer).not.toBeNull();
+      expect(result.safetyOverride?.applied).toBe(true);
+    });
+
+    it('극한 추위가 아닐 때는 안전 오버라이드 없음', () => {
+      const prefs = { dislikedItemIds: ['outer-jacket'] };
+      const result = recommendOutfit(mockWeatherMild, prefs);
+      expect(result.safetyOverride).toBeUndefined();
+    });
+
+    it('preferences 파라미터 없이도 동작 (하위 호환)', () => {
+      const result = recommendOutfit(mockWeatherFreezing);
+      expect(result.outer).not.toBeNull();
+      expect(result.safetyOverride).toBeUndefined();
+    });
+
+    it('싫어하는 상의는 대안으로 교체된다', () => {
+      const prefs = { dislikedItemIds: ['top-heattech'] };
+      const result = recommendOutfit(mockWeatherFreezing, prefs);
+      expect(result.top.id).not.toBe('top-heattech');
+    });
+  });
+
   // === Step 4: recommendOutfit 통합 ===
   describe('recommendOutfit', () => {
     it('추운 날씨 → 코트/패딩 계열 추천', () => {

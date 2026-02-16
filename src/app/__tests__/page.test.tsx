@@ -42,6 +42,31 @@ vi.mock('@/components/CitySearchModal', () => ({
   },
 }));
 
+// PreferencesModal mock
+vi.mock('@/components/PreferencesModal', () => ({
+  PreferencesModal: ({ isOpen }: { isOpen: boolean }) => {
+    if (!isOpen) return null;
+    return <div data-testid="preferences-modal">옷장 설정 모달</div>;
+  },
+}));
+
+// preferenceStore mock
+const mockPreferenceStore: Record<string, unknown> = {
+  preferences: { dislikedItemIds: [] },
+  isPreferencesModalOpen: false,
+  openPreferencesModal: vi.fn(),
+  closePreferencesModal: vi.fn(),
+  hydrateFromStorage: vi.fn(),
+  toggleDislike: vi.fn(),
+  isDisliked: vi.fn(() => false),
+  clearAllDislikes: vi.fn(),
+};
+
+vi.mock('@/store/preferenceStore', () => ({
+  usePreferenceStore: (selector?: (s: Record<string, unknown>) => unknown) =>
+    selector ? selector(mockPreferenceStore) : mockPreferenceStore,
+}));
+
 // framer-motion Proxy mock
 vi.mock('framer-motion', () => ({
   motion: new Proxy({}, {
@@ -84,6 +109,7 @@ describe('Home Page', () => {
     vi.clearAllMocks();
     mockLocationStore.selectedLocation = null;
     mockLocationStore.isSearchModalOpen = false;
+    mockPreferenceStore.isPreferencesModalOpen = false;
   });
 
   it('헤더를 표시한다', () => {
@@ -184,5 +210,18 @@ describe('Home Page', () => {
 
     render(<Home />);
     expect(screen.getByText('도쿄')).toBeInTheDocument();
+  });
+
+  it('앱 시작 시 preferenceStore의 hydrateFromStorage를 호출한다', () => {
+    setupDefaultMocks();
+    render(<Home />);
+    expect(mockPreferenceStore.hydrateFromStorage).toHaveBeenCalled();
+  });
+
+  it('설정 버튼 클릭 시 openPreferencesModal을 호출한다', () => {
+    setupDefaultMocks();
+    render(<Home />);
+    fireEvent.click(screen.getByTestId('preferences-btn'));
+    expect(mockPreferenceStore.openPreferencesModal).toHaveBeenCalledTimes(1);
   });
 });

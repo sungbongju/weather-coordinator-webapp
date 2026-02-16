@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import type { OutfitRecommendation, ClothingItem } from '@/types/outfit';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ShoppingBag } from 'lucide-react';
+import { Sparkles, ShoppingBag, ShieldAlert } from 'lucide-react';
 import { getTempLabel } from '@/lib/weatherMapping';
+import { usePreferenceStore } from '@/store/preferenceStore';
 import { ClothingItemCard } from './ClothingItemCard';
 import { OutfitComment } from './OutfitComment';
 import { ConditionBadges } from './ConditionBadges';
@@ -56,6 +57,8 @@ const itemVariants = {
 
 export function OutfitRecommend({ recommendation, isLoading }: OutfitRecommendProps) {
   const [selectedItem, setSelectedItem] = useState<ClothingItem | null>(null);
+  const toggleDislike = usePreferenceStore((s) => s.toggleDislike);
+  const isDisliked = usePreferenceStore((s) => s.isDisliked);
 
   if (isLoading) {
     return <OutfitSkeleton />;
@@ -111,10 +114,24 @@ export function OutfitRecommend({ recommendation, isLoading }: OutfitRecommendPr
               <ClothingItemCard
                 item={item}
                 onClick={() => setSelectedItem(item)}
+                onDislike={(id) => toggleDislike(id)}
+                isDisliked={isDisliked(item.id)}
               />
             </motion.div>
           ))}
         </motion.div>
+
+        {/* 안전 오버라이드 배너 */}
+        {recommendation.safetyOverride?.applied && (
+          <motion.div
+            variants={itemVariants}
+            className="glass-card flex items-center gap-2 px-4 py-3 border border-amber-400/30 bg-amber-500/10"
+            data-testid="safety-override-banner"
+          >
+            <ShieldAlert size={16} className="text-amber-300 shrink-0" />
+            <p className="text-xs text-amber-200">{recommendation.safetyOverride.reason}</p>
+          </motion.div>
+        )}
 
         {/* 악세서리 */}
         {recommendation.accessories.length > 0 && (

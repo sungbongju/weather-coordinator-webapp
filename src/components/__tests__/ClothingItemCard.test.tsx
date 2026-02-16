@@ -65,4 +65,24 @@ describe('ClothingItemCard', () => {
     render(<ClothingItemCard item={mockItem} onClick={() => {}} />);
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
+
+  it('onDislike이 전달되면 싫어요 버튼을 표시한다', () => {
+    render(<ClothingItemCard item={mockItem} onDislike={() => {}} />);
+    expect(screen.getByTestId('dislike-btn')).toBeInTheDocument();
+  });
+
+  it('싫어요 버튼 클릭 시 onDislike이 호출되고 onClick은 호출되지 않는다', () => {
+    const onClick = vi.fn();
+    const onDislike = vi.fn();
+    render(<ClothingItemCard item={mockItem} onClick={onClick} onDislike={onDislike} />);
+    fireEvent.click(screen.getByTestId('dislike-btn'));
+    expect(onDislike).toHaveBeenCalledWith('outer-padding');
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('isDisliked가 true이면 카드가 흐려진다', () => {
+    const { container } = render(<ClothingItemCard item={mockItem} onDislike={() => {}} isDisliked />);
+    const card = container.firstChild as HTMLElement;
+    expect(card.className).toContain('opacity-50');
+  });
 });
