@@ -16,6 +16,7 @@ export interface WeatherData {
   iconUri: string;
   isDaytime: boolean;
   cloudCover: number;               // 구름량 (%)
+  cityName?: string;                // 도시 이름 (OWM 응답에서 추출)
 }
 
 /** 강수 타입 */

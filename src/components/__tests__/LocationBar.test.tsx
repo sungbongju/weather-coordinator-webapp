@@ -16,27 +16,48 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
 }));
 
+const defaultProps = {
+  isLoading: false,
+  cityName: null as string | null,
+  locationSource: null as 'gps' | 'search' | 'stored' | null,
+  onOpenSearch: vi.fn(),
+  onRefresh: vi.fn(),
+};
+
 describe('LocationBar', () => {
-  it('위치 기반 텍스트를 표시한다', () => {
-    render(<LocationBar isLoading={false} error={null} onRefresh={() => {}} />);
-    expect(screen.getByText('현재 위치 기반')).toBeInTheDocument();
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('에러 메시지를 표시한다', () => {
-    render(
-      <LocationBar
-        isLoading={false}
-        error="위치 권한이 거부되었습니다"
-        onRefresh={() => {}}
-      />,
-    );
-    expect(screen.getByText('서울(기본) 기준')).toBeInTheDocument();
+  it('로딩 중일 때 "위치 확인 중..."을 표시한다', () => {
+    render(<LocationBar {...defaultProps} isLoading={true} />);
+    expect(screen.getByText('위치 확인 중...')).toBeInTheDocument();
+  });
+
+  it('도시 이름이 있으면 표시한다', () => {
+    render(<LocationBar {...defaultProps} cityName="서울" locationSource="gps" />);
+    expect(screen.getByText('서울')).toBeInTheDocument();
+  });
+
+  it('도시 이름이 없으면 안내 텍스트를 표시한다', () => {
+    render(<LocationBar {...defaultProps} />);
+    expect(screen.getByText('위치를 선택하세요')).toBeInTheDocument();
+  });
+
+  it('위치 영역 클릭 시 onOpenSearch를 호출한다', () => {
+    render(<LocationBar {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('location-search-btn'));
+    expect(defaultProps.onOpenSearch).toHaveBeenCalledTimes(1);
   });
 
   it('새로고침 버튼 클릭 시 onRefresh를 호출한다', () => {
-    const onRefresh = vi.fn();
-    render(<LocationBar isLoading={false} error={null} onRefresh={onRefresh} />);
+    render(<LocationBar {...defaultProps} />);
     fireEvent.click(screen.getByRole('button', { name: '새로고침' }));
-    expect(onRefresh).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('검색 소스일 때도 도시 이름을 표시한다', () => {
+    render(<LocationBar {...defaultProps} cityName="도쿄" locationSource="search" />);
+    expect(screen.getByText('도쿄')).toBeInTheDocument();
   });
 });

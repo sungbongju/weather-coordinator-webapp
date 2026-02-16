@@ -97,5 +97,6 @@ export function transformWeatherResponse(raw: OWMWeatherResponse): WeatherData {
       : '',
     isDaytime: isDaytimeNow(raw.sys?.sunrise ?? 0, raw.sys?.sunset ?? 0, raw.dt ?? 0),
     cloudCover: raw.clouds?.all ?? 0,
+    cityName: raw.name || undefined,
   };
 }

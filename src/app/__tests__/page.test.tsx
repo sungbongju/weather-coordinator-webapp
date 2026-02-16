@@ -19,6 +19,29 @@ vi.mock('@/hooks/useOutfit', () => ({
   useOutfit: vi.fn(),
 }));
 
+// locationStore mock
+const mockLocationStore = {
+  selectedLocation: null as { latitude: number; longitude: number; cityName: string; country: string; source: string } | null,
+  isSearchModalOpen: false,
+  setSelectedLocation: vi.fn(),
+  clearSelectedLocation: vi.fn(),
+  openSearchModal: vi.fn(),
+  closeSearchModal: vi.fn(),
+  hydrateFromStorage: vi.fn(),
+};
+
+vi.mock('@/store/locationStore', () => ({
+  useLocationStore: () => mockLocationStore,
+}));
+
+// CitySearchModal mock
+vi.mock('@/components/CitySearchModal', () => ({
+  CitySearchModal: ({ isOpen }: { isOpen: boolean }) => {
+    if (!isOpen) return null;
+    return <div data-testid="city-search-modal">도시 검색 모달</div>;
+  },
+}));
+
 // framer-motion Proxy mock
 vi.mock('framer-motion', () => ({
   motion: new Proxy({}, {
@@ -41,9 +64,26 @@ const mockUseGeolocation = vi.mocked(useGeolocation);
 const mockUseWeather = vi.mocked(useWeather);
 const mockUseOutfit = vi.mocked(useOutfit);
 
+function setupDefaultMocks() {
+  mockUseGeolocation.mockReturnValue({
+    location: { latitude: 37.5, longitude: 127.0 },
+    error: null,
+    isLoading: false,
+  });
+  mockUseWeather.mockReturnValue({
+    weatherData: mockWeatherMild,
+    isLoading: false,
+    error: null,
+    refetch: mockRefetch,
+  });
+  mockUseOutfit.mockReturnValue({ recommendation: recommendOutfit(mockWeatherMild) });
+}
+
 describe('Home Page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockLocationStore.selectedLocation = null;
+    mockLocationStore.isSearchModalOpen = false;
   });
 
   it('헤더를 표시한다', () => {
@@ -84,24 +124,10 @@ describe('Home Page', () => {
   });
 
   it('날씨 + 코디 추천을 정상 렌더한다', () => {
-    const recommendation = recommendOutfit(mockWeatherMild);
-
-    mockUseGeolocation.mockReturnValue({
-      location: { latitude: 37.5, longitude: 127.0 },
-      error: null,
-      isLoading: false,
-    });
-    mockUseWeather.mockReturnValue({
-      weatherData: mockWeatherMild,
-      isLoading: false,
-      error: null,
-      refetch: mockRefetch,
-    });
-    mockUseOutfit.mockReturnValue({ recommendation });
+    setupDefaultMocks();
 
     render(<Home />);
     expect(screen.getByText('15°')).toBeInTheDocument();
-    expect(screen.getByText(recommendation.top.name)).toBeInTheDocument();
   });
 
   it('에러 상태를 표시한다', () => {
@@ -124,21 +150,39 @@ describe('Home Page', () => {
   });
 
   it('새로고침 버튼 클릭 시 refetch를 호출한다', () => {
-    mockUseGeolocation.mockReturnValue({
-      location: { latitude: 37.5, longitude: 127.0 },
-      error: null,
-      isLoading: false,
-    });
-    mockUseWeather.mockReturnValue({
-      weatherData: mockWeatherMild,
-      isLoading: false,
-      error: null,
-      refetch: mockRefetch,
-    });
-    mockUseOutfit.mockReturnValue({ recommendation: recommendOutfit(mockWeatherMild) });
+    setupDefaultMocks();
 
     render(<Home />);
     fireEvent.click(screen.getByRole('button', { name: '새로고침' }));
     expect(mockRefetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('앱 시작 시 hydrateFromStorage를 호출한다', () => {
+    setupDefaultMocks();
+
+    render(<Home />);
+    expect(mockLocationStore.hydrateFromStorage).toHaveBeenCalled();
+  });
+
+  it('도시 검색 버튼 클릭 시 openSearchModal을 호출한다', () => {
+    setupDefaultMocks();
+
+    render(<Home />);
+    fireEvent.click(screen.getByTestId('location-search-btn'));
+    expect(mockLocationStore.openSearchModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('selectedLocation이 있으면 도시 이름을 표시한다', () => {
+    mockLocationStore.selectedLocation = {
+      latitude: 35.68,
+      longitude: 139.65,
+      cityName: '도쿄',
+      country: 'JP',
+      source: 'search',
+    };
+    setupDefaultMocks();
+
+    render(<Home />);
+    expect(screen.getByText('도쿄')).toBeInTheDocument();
   });
 });

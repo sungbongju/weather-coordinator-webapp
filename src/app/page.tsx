@@ -1,16 +1,20 @@
 'use client';
 
+import { useEffect, useMemo, useCallback } from 'react';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useWeather } from '@/hooks/useWeather';
 import { useOutfit } from '@/hooks/useOutfit';
+import { useLocationStore } from '@/store/locationStore';
 import { getWeatherBackground } from '@/lib/weatherMapping';
 import { WeatherCard } from '@/components/WeatherCard';
 import { OutfitRecommend } from '@/components/OutfitRecommend';
 import { LocationBar } from '@/components/LocationBar';
 import { ErrorState } from '@/components/ErrorState';
+import { CitySearchModal } from '@/components/CitySearchModal';
 import { cn } from '@/lib/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import type { CitySearchResult } from '@/types/location';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -30,11 +34,71 @@ const sectionVariants = {
 };
 
 export default function Home() {
-  const { location, error: geoError, isLoading: geoLoading } = useGeolocation();
-  const { weatherData, isLoading: weatherLoading, error: weatherError, refetch } = useWeather(location);
+  // Location store
+  const {
+    selectedLocation,
+    setSelectedLocation,
+    isSearchModalOpen,
+    openSearchModal,
+    closeSearchModal,
+    hydrateFromStorage,
+  } = useLocationStore();
+
+  // GPS geolocation (항상 실행, fallback 용도)
+  const { location: gpsLocation, isLoading: geoLoading } = useGeolocation();
+
+  // localStorage에서 복원
+  useEffect(() => {
+    hydrateFromStorage();
+  }, [hydrateFromStorage]);
+
+  // 유효 위치 결정: store 우선, 없으면 GPS
+  const effectiveLocation = useMemo(() => {
+    if (selectedLocation) {
+      return { latitude: selectedLocation.latitude, longitude: selectedLocation.longitude };
+    }
+    return gpsLocation;
+  }, [selectedLocation, gpsLocation]);
+
+  // Weather & outfit
+  const { weatherData, isLoading: weatherLoading, error: weatherError, refetch } = useWeather(effectiveLocation);
   const { recommendation } = useOutfit(weatherData);
 
   const isLoading = geoLoading || weatherLoading;
+
+  // 도시 이름: store 우선, 없으면 weatherData에서
+  const displayCityName = selectedLocation?.cityName
+    || weatherData?.cityName
+    || null;
+
+  const locationSource = selectedLocation?.source || (gpsLocation ? 'gps' : null);
+
+  // 도시 선택 핸들러
+  const handleSelectCity = useCallback((city: CitySearchResult) => {
+    setSelectedLocation({
+      latitude: city.latitude,
+      longitude: city.longitude,
+      cityName: city.displayName,
+      country: city.country,
+      state: city.state,
+      source: 'search',
+    });
+    closeSearchModal();
+  }, [setSelectedLocation, closeSearchModal]);
+
+  // 현재 위치 선택 핸들러
+  const handleSelectCurrentLocation = useCallback(() => {
+    if (gpsLocation) {
+      setSelectedLocation({
+        latitude: gpsLocation.latitude,
+        longitude: gpsLocation.longitude,
+        cityName: weatherData?.cityName || '현재 위치',
+        country: '',
+        source: 'gps',
+      });
+    }
+    closeSearchModal();
+  }, [gpsLocation, weatherData, setSelectedLocation, closeSearchModal]);
 
   const bgClass = weatherData
     ? getWeatherBackground(weatherData.condition, weatherData.isDaytime)
@@ -67,8 +131,10 @@ export default function Home() {
         {/* 위치 바 */}
         <motion.div variants={sectionVariants}>
           <LocationBar
-            isLoading={geoLoading}
-            error={geoError}
+            isLoading={geoLoading && !selectedLocation}
+            cityName={displayCityName}
+            locationSource={locationSource}
+            onOpenSearch={openSearchModal}
             onRefresh={refetch}
           />
         </motion.div>
@@ -105,6 +171,14 @@ export default function Home() {
           </motion.div>
         )}
       </motion.main>
+
+      {/* 도시 검색 모달 */}
+      <CitySearchModal
+        isOpen={isSearchModalOpen}
+        onClose={closeSearchModal}
+        onSelectCity={handleSelectCity}
+        onSelectCurrentLocation={handleSelectCurrentLocation}
+      />
     </div>
   );
 }

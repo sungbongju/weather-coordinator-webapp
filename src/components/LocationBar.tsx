@@ -1,15 +1,35 @@
 'use client';
 
-import { MapPin, Loader2, RefreshCw } from 'lucide-react';
+import { MapPin, Loader2, RefreshCw, Search, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import type { LocationSource } from '@/types/location';
 
 interface LocationBarProps {
   isLoading: boolean;
-  error: string | null;
+  cityName: string | null;
+  locationSource: LocationSource | null;
+  onOpenSearch: () => void;
   onRefresh: () => void;
 }
 
-export function LocationBar({ isLoading, error, onRefresh }: LocationBarProps) {
+function getLocationText(
+  isLoading: boolean,
+  cityName: string | null,
+  locationSource: LocationSource | null,
+): string {
+  if (isLoading) return '위치 확인 중...';
+  if (cityName) return cityName;
+  return '위치를 선택하세요';
+}
+
+function getLocationIcon(locationSource: LocationSource | null) {
+  if (locationSource === 'search' || locationSource === 'stored') return Search;
+  return MapPin;
+}
+
+export function LocationBar({ isLoading, cityName, locationSource, onOpenSearch, onRefresh }: LocationBarProps) {
+  const Icon = getLocationIcon(locationSource);
+
   return (
     <motion.div
       className="flex items-center justify-between rounded-full bg-white/15 px-4 py-2.5 backdrop-blur-sm border border-white/15 shadow-glass-sm"
@@ -17,20 +37,20 @@ export function LocationBar({ isLoading, error, onRefresh }: LocationBarProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 300, damping: 24 }}
     >
-      <div className="flex items-center gap-2 text-sm text-white/70">
+      <button
+        onClick={onOpenSearch}
+        className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors cursor-pointer"
+        aria-label="도시 검색"
+        data-testid="location-search-btn"
+      >
         {isLoading ? (
           <Loader2 size={16} className="animate-spin text-white/60" />
         ) : (
-          <MapPin size={16} className="text-secondary" />
+          <Icon size={16} className="text-secondary" />
         )}
-        <span>
-          {isLoading
-            ? '위치 확인 중...'
-            : error
-              ? '서울(기본) 기준'
-              : '현재 위치 기반'}
-        </span>
-      </div>
+        <span>{getLocationText(isLoading, cityName, locationSource)}</span>
+        {!isLoading && <ChevronDown size={14} className="text-white/40" />}
+      </button>
       <motion.button
         onClick={onRefresh}
         aria-label="새로고침"
