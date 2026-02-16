@@ -9,55 +9,41 @@ function createRequest(params: Record<string, string> = {}) {
   return new NextRequest(url);
 }
 
-// Google Weather API 응답 목 데이터
-const mockGoogleResponse = {
-  currentTime: '2024-03-15T12:00:00Z',
-  timeZone: { id: 'Asia/Seoul' },
-  isDaytime: true,
-  weatherCondition: {
-    iconBaseUri: 'https://maps.gstatic.com/weather/v1/sunny',
-    description: { text: '맑음', languageCode: 'ko' },
-    type: 'CLEAR',
+// OpenWeatherMap API 응답 목 데이터
+const mockOWMResponse = {
+  weather: [
+    { id: 800, main: 'Clear', description: '맑음', icon: '01d' },
+  ],
+  main: {
+    temp: 15,
+    feels_like: 13,
+    temp_min: 8,
+    temp_max: 18,
+    pressure: 1013,
+    humidity: 55,
   },
-  temperature: { degrees: 15, unit: 'CELSIUS' },
-  feelsLikeTemperature: { degrees: 13, unit: 'CELSIUS' },
-  dewPoint: { degrees: 5, unit: 'CELSIUS' },
-  heatIndex: { degrees: 15, unit: 'CELSIUS' },
-  windChill: { degrees: 13, unit: 'CELSIUS' },
-  relativeHumidity: 55,
-  uvIndex: 4,
-  precipitation: {
-    probability: { percent: 10, type: 'RAIN' },
-    qpf: { quantity: 0, unit: 'MILLIMETERS' },
-  },
-  thunderstormProbability: 0,
-  airPressure: { meanSeaLevelMillibars: 1013 },
-  wind: {
-    direction: { degrees: 270, cardinal: 'W' },
-    speed: { value: 12, unit: 'KILOMETERS_PER_HOUR' },
-    gust: { value: 18, unit: 'KILOMETERS_PER_HOUR' },
-  },
-  visibility: { distance: 10, unit: 'KILOMETERS' },
-  cloudCover: 20,
-  currentConditionsHistory: {
-    temperatureChange: { degrees: 2, unit: 'CELSIUS' },
-    maxTemperature: { degrees: 18, unit: 'CELSIUS' },
-    minTemperature: { degrees: 8, unit: 'CELSIUS' },
-  },
+  wind: { speed: 3.3, deg: 270 },
+  clouds: { all: 20 },
+  sys: { country: 'KR', sunrise: 1710460800, sunset: 1710504000 },
+  dt: 1710480000,
+  timezone: 32400,
+  name: 'Seoul',
 };
 
 describe('/api/weather', () => {
   beforeEach(() => {
+    vi.stubEnv('OPENWEATHER_API_KEY', 'test-key');
     vi.stubGlobal('fetch', vi.fn());
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it('유효한 좌표로 요청 시 날씨 데이터를 반환해야 한다', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify(mockGoogleResponse), { status: 200 }),
+      new Response(JSON.stringify(mockOWMResponse), { status: 200 }),
     );
 
     const request = createRequest({ lat: '37.5665', lng: '126.978' });
@@ -90,8 +76,8 @@ describe('/api/weather', () => {
     expect(response.status).toBe(400);
   });
 
-  it('Google API 실패 시 502 에러를 반환해야 한다', async () => {
-    vi.mocked(fetch).mockRejectedValueOnce(new Error('Google API error'));
+  it('OpenWeatherMap API 실패 시 502 에러를 반환해야 한다', async () => {
+    vi.mocked(fetch).mockRejectedValueOnce(new Error('API error'));
 
     const request = createRequest({ lat: '37.5665', lng: '126.978' });
     const response = await GET(request);
@@ -101,7 +87,7 @@ describe('/api/weather', () => {
 
   it('응답이 WeatherData 형태로 변환되어야 한다', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify(mockGoogleResponse), { status: 200 }),
+      new Response(JSON.stringify(mockOWMResponse), { status: 200 }),
     );
 
     const request = createRequest({ lat: '37.5665', lng: '126.978' });

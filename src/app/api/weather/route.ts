@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { transformWeatherResponse } from '@/lib/weather';
-import type { GoogleWeatherResponse } from '@/types/weather';
+import { fetchCurrentWeather, transformWeatherResponse } from '@/lib/weather';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -26,23 +25,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const apiKey = process.env.GOOGLE_WEATHER_API_KEY;
-    const url =
-      `https://weather.googleapis.com/v1/currentConditions:lookup` +
-      `?key=${apiKey}` +
-      `&location.latitude=${latitude}` +
-      `&location.longitude=${longitude}` +
-      `&languageCode=ko`;
-
-    const res = await fetch(url, {
-      next: { revalidate: 600 }, // 10분 캐시
-    });
-
-    if (!res.ok) {
-      throw new Error(`Google API: ${res.status}`);
-    }
-
-    const raw = (await res.json()) as GoogleWeatherResponse;
+    const raw = await fetchCurrentWeather(latitude, longitude);
     const weatherData = transformWeatherResponse(raw);
 
     return NextResponse.json(weatherData);

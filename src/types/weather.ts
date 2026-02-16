@@ -57,54 +57,48 @@ export interface WeatherRequestParams {
   lng: number;
 }
 
-// --- Google Weather API 원본 타입 ---
+// --- OpenWeatherMap API 원본 타입 ---
 
-export interface GoogleTemperature {
-  degrees: number;
-  unit: 'CELSIUS' | 'FAHRENHEIT';
+export interface OWMWeatherCondition {
+  id: number;
+  main: string;
+  description: string;
+  icon: string;
 }
 
-export interface GoogleWind {
-  direction: { degrees: number; cardinal: string };
-  speed: { value: number; unit: string };
-  gust: { value: number; unit: string };
+export interface OWMMain {
+  temp: number;
+  feels_like: number;
+  temp_min: number;
+  temp_max: number;
+  pressure: number;
+  humidity: number;
 }
 
-export interface GooglePrecipitation {
-  probability: { percent: number; type: string };
-  qpf: { quantity: number; unit: string };
+export interface OWMWind {
+  speed: number;   // m/s
+  deg: number;
+  gust?: number;
 }
 
-export interface GoogleWeatherCondition {
-  iconBaseUri: string;
-  description: { text: string; languageCode: string };
-  type: string;
+export interface OWMClouds {
+  all: number;     // 구름량 %
 }
 
-export interface GoogleCurrentConditionsHistory {
-  temperatureChange: GoogleTemperature;
-  maxTemperature: GoogleTemperature;
-  minTemperature: GoogleTemperature;
+export interface OWMSys {
+  country: string;
+  sunrise: number;
+  sunset: number;
 }
 
-/** Google Weather API currentConditions 응답 */
-export interface GoogleWeatherResponse {
-  currentTime: string;
-  timeZone: { id: string };
-  isDaytime: boolean;
-  weatherCondition: GoogleWeatherCondition;
-  temperature: GoogleTemperature;
-  feelsLikeTemperature: GoogleTemperature;
-  dewPoint: GoogleTemperature;
-  heatIndex: GoogleTemperature;
-  windChill: GoogleTemperature;
-  relativeHumidity: number;
-  uvIndex: number;
-  precipitation: GooglePrecipitation;
-  thunderstormProbability: number;
-  airPressure: { meanSeaLevelMillibars: number };
-  wind: GoogleWind;
-  visibility: { distance: number; unit: string };
-  cloudCover: number;
-  currentConditionsHistory: GoogleCurrentConditionsHistory;
+/** OpenWeatherMap 2.5 Current Weather 응답 */
+export interface OWMWeatherResponse {
+  weather: OWMWeatherCondition[];
+  main: OWMMain;
+  wind: OWMWind;
+  clouds: OWMClouds;
+  sys: OWMSys;
+  dt: number;         // 데이터 시간 (unix)
+  timezone: number;    // UTC offset (seconds)
+  name: string;        // 도시 이름
 }
