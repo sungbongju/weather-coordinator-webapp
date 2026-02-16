@@ -19,14 +19,17 @@ vi.mock('@/hooks/useOutfit', () => ({
   useOutfit: vi.fn(),
 }));
 
-// Mock framer-motion
+// framer-motion Proxy mock
 vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
-      const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
-      return <div {...rest}>{children}</div>;
+  motion: new Proxy({}, {
+    get: (_target, prop: string) => {
+      return ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
+        const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
+        const Tag = prop as keyof JSX.IntrinsicElements;
+        return <Tag {...rest}>{children}</Tag>;
+      };
     },
-  },
+  }),
   AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
 }));
 
@@ -77,7 +80,6 @@ describe('Home Page', () => {
     mockUseOutfit.mockReturnValue({ recommendation: null });
 
     render(<Home />);
-    // WeatherCard와 OutfitRecommend 모두 스켈레톤 표시
     expect(screen.getByTestId('outfit-skeleton')).toBeInTheDocument();
   });
 
@@ -98,9 +100,7 @@ describe('Home Page', () => {
     mockUseOutfit.mockReturnValue({ recommendation });
 
     render(<Home />);
-    // 날씨 카드: 온도 표시
     expect(screen.getByText('15°')).toBeInTheDocument();
-    // 코디 추천: 아이템 이름
     expect(screen.getByText(recommendation.top.name)).toBeInTheDocument();
   });
 

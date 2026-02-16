@@ -1,3 +1,8 @@
+'use client';
+
+import { MapPin, Loader2, RefreshCw } from 'lucide-react';
+import { motion } from 'framer-motion';
+
 interface LocationBarProps {
   isLoading: boolean;
   error: string | null;
@@ -6,9 +11,18 @@ interface LocationBarProps {
 
 export function LocationBar({ isLoading, error, onRefresh }: LocationBarProps) {
   return (
-    <div className="flex items-center justify-between rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm border border-white/10">
+    <motion.div
+      className="flex items-center justify-between rounded-full bg-white/15 px-4 py-2.5 backdrop-blur-sm border border-white/15 shadow-glass-sm"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring' as const, stiffness: 300, damping: 24 }}
+    >
       <div className="flex items-center gap-2 text-sm text-white/70">
-        <span>{isLoading ? '⏳' : '📍'}</span>
+        {isLoading ? (
+          <Loader2 size={16} className="animate-spin text-white/60" />
+        ) : (
+          <MapPin size={16} className="text-secondary" />
+        )}
         <span>
           {isLoading
             ? '위치 확인 중...'
@@ -17,13 +31,15 @@ export function LocationBar({ isLoading, error, onRefresh }: LocationBarProps) {
               : '현재 위치 기반'}
         </span>
       </div>
-      <button
+      <motion.button
         onClick={onRefresh}
         aria-label="새로고침"
         className="rounded-full p-1.5 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+        whileHover={{ rotate: 180 }}
+        transition={{ type: 'spring' as const, stiffness: 200, damping: 10 }}
       >
-        🔄
-      </button>
-    </div>
+        <RefreshCw size={16} />
+      </motion.button>
+    </motion.div>
   );
 }

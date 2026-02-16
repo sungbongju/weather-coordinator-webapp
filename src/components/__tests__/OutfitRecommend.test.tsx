@@ -5,14 +5,17 @@ import type { OutfitRecommendation } from '@/types/outfit';
 import { recommendOutfit } from '@/lib/outfitEngine';
 import { mockWeatherMild, mockWeatherWarm, mockWeatherRainyMild } from '@/__tests__/fixtures/weatherData';
 
-// framer-motion mock for testing
+// framer-motion Proxy mock
 vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
-      const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
-      return <div {...rest}>{children}</div>;
+  motion: new Proxy({}, {
+    get: (_target, prop: string) => {
+      return ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
+        const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
+        const Tag = prop as keyof JSX.IntrinsicElements;
+        return <Tag {...rest}>{children}</Tag>;
+      };
     },
-  },
+  }),
   AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
 }));
 
@@ -33,7 +36,7 @@ describe('OutfitRecommend', () => {
     const rec = getMockRecommendation(mockWeatherWarm);
     expect(rec.outer).toBeNull();
     render(<OutfitRecommend recommendation={rec} />);
-    expect(screen.queryByText('🧥')).not.toBeInTheDocument();
+    expect(screen.queryByText('아우터')).not.toBeInTheDocument();
   });
 
   it('outer가 있으면 아우터 카드를 표시한다', () => {

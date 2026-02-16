@@ -1,7 +1,10 @@
 'use client';
 
 import type { WeatherData } from '@/types/weather';
+import type { LucideIcon } from 'lucide-react';
+import { CloudRain, Wind, Sun, Droplets } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { motion } from 'framer-motion';
 
 interface WeatherCardProps {
   data: WeatherData | null;
@@ -9,26 +12,30 @@ interface WeatherCardProps {
   className?: string;
 }
 
-function WeatherDetailPill({ icon, label, value }: { icon: string; label: string; value: string }) {
+function WeatherDetailPill({ Icon, label, value }: { Icon: LucideIcon; label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-2xl bg-white/10 px-4 py-3 min-w-[80px]">
-      <span className="text-lg">{icon}</span>
+    <motion.div
+      className="flex flex-col items-center gap-1 rounded-2xl bg-white/10 px-4 py-3 min-w-[80px]"
+      whileHover={{ y: -3 }}
+      transition={{ type: 'spring' as const, stiffness: 300, damping: 15 }}
+    >
+      <Icon size={20} className="text-white/70" />
       <span className="text-xs text-white/60">{label}</span>
       <span className="text-sm font-semibold text-white">{value}</span>
-    </div>
+    </motion.div>
   );
 }
 
 function WeatherCardSkeleton() {
   return (
     <div className="glass-card p-6">
-      <div className="animate-pulse space-y-4">
-        <div className="h-4 w-20 rounded bg-white/20" />
-        <div className="h-12 w-32 rounded bg-white/20" />
-        <div className="h-4 w-24 rounded bg-white/20" />
+      <div className="space-y-4">
+        <div className="h-4 w-20 rounded skeleton-shimmer" />
+        <div className="h-12 w-32 rounded skeleton-shimmer" />
+        <div className="h-4 w-24 rounded skeleton-shimmer" />
         <div className="flex gap-3 overflow-hidden">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-20 w-20 rounded-2xl bg-white/10" />
+            <div key={i} className="h-20 w-20 rounded-2xl skeleton-shimmer" />
           ))}
         </div>
       </div>
@@ -50,9 +57,14 @@ export function WeatherCard({ data, isLoading, className }: WeatherCardProps) {
 
       {/* 온도 */}
       <div className="mt-2 flex items-baseline gap-2">
-        <span className="text-5xl font-bold tracking-tight text-white text-shadow-sm">
+        <motion.span
+          className="text-6xl font-extrabold tracking-tighter text-white text-shadow-sm"
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+        >
           {Math.round(data.temperature)}°
-        </span>
+        </motion.span>
         <span className="text-lg text-white/60">
           체감 {Math.round(data.feelsLike)}°
         </span>
@@ -66,22 +78,22 @@ export function WeatherCard({ data, isLoading, className }: WeatherCardProps) {
       {/* 날씨 상세 정보 */}
       <div className="mt-4 flex gap-3 overflow-x-auto scrollbar-hide pb-1">
         <WeatherDetailPill
-          icon="💧"
+          Icon={CloudRain}
           label="강수"
           value={`${data.precipitationProbability}%`}
         />
         <WeatherDetailPill
-          icon="💨"
+          Icon={Wind}
           label="바람"
           value={`${Math.round(data.windSpeed)}km/h`}
         />
         <WeatherDetailPill
-          icon="☀️"
+          Icon={Sun}
           label="UV"
           value={`${data.uvIndex}`}
         />
         <WeatherDetailPill
-          icon="💦"
+          Icon={Droplets}
           label="습도"
           value={`${data.humidity}%`}
         />

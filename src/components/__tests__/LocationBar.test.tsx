@@ -2,6 +2,20 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LocationBar } from '../LocationBar';
 
+// framer-motion mock
+vi.mock('framer-motion', () => ({
+  motion: new Proxy({}, {
+    get: (_target, prop: string) => {
+      return ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
+        const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
+        const Tag = prop as keyof JSX.IntrinsicElements;
+        return <Tag {...rest}>{children}</Tag>;
+      };
+    },
+  }),
+  AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
+}));
+
 describe('LocationBar', () => {
   it('위치 기반 텍스트를 표시한다', () => {
     render(<LocationBar isLoading={false} error={null} onRefresh={() => {}} />);

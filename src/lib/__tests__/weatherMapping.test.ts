@@ -3,7 +3,8 @@ import {
   getWeatherBackground,
   getTempBackground,
   getTempLabel,
-  getCategoryEmoji,
+  getCategoryIcon,
+  getCategoryColor,
   getModifierBadges,
 } from '../weatherMapping';
 import type { ConditionModifiers } from '@/types/outfit';
@@ -87,25 +88,49 @@ describe('weatherMapping', () => {
     });
   });
 
-  describe('getCategoryEmoji', () => {
-    it('OUTER → 🧥', () => {
-      expect(getCategoryEmoji('OUTER')).toBe('🧥');
+  describe('getCategoryIcon', () => {
+    it('각 카테고리에 대해 아이콘 컴포넌트를 반환한다', () => {
+      expect(getCategoryIcon('OUTER')).toBeDefined();
+      expect(getCategoryIcon('TOP')).toBeDefined();
+      expect(getCategoryIcon('BOTTOM')).toBeDefined();
+      expect(getCategoryIcon('SHOES')).toBeDefined();
+      expect(getCategoryIcon('ACCESSORY')).toBeDefined();
     });
 
-    it('TOP → 👕', () => {
-      expect(getCategoryEmoji('TOP')).toBe('👕');
+    it('서로 다른 카테고리는 다른 아이콘을 반환한다', () => {
+      const outer = getCategoryIcon('OUTER');
+      const top = getCategoryIcon('TOP');
+      expect(outer).not.toBe(top);
+    });
+  });
+
+  describe('getCategoryColor', () => {
+    it('OUTER → indigo 계열 색상', () => {
+      const color = getCategoryColor('OUTER');
+      expect(color.bg).toContain('indigo');
+      expect(color.border).toContain('indigo');
+      expect(color.iconColor).toContain('indigo');
     });
 
-    it('BOTTOM → 👖', () => {
-      expect(getCategoryEmoji('BOTTOM')).toBe('👖');
+    it('TOP → sky 계열 색상', () => {
+      const color = getCategoryColor('TOP');
+      expect(color.bg).toContain('sky');
+      expect(color.iconColor).toContain('sky');
     });
 
-    it('SHOES → 👟', () => {
-      expect(getCategoryEmoji('SHOES')).toBe('👟');
+    it('BOTTOM → emerald 계열 색상', () => {
+      const color = getCategoryColor('BOTTOM');
+      expect(color.bg).toContain('emerald');
     });
 
-    it('ACCESSORY → 🎒', () => {
-      expect(getCategoryEmoji('ACCESSORY')).toBe('🎒');
+    it('SHOES → amber 계열 색상', () => {
+      const color = getCategoryColor('SHOES');
+      expect(color.bg).toContain('amber');
+    });
+
+    it('ACCESSORY → pink 계열 색상', () => {
+      const color = getCategoryColor('ACCESSORY');
+      expect(color.bg).toContain('pink');
     });
   });
 
@@ -123,16 +148,19 @@ describe('weatherMapping', () => {
       expect(getModifierBadges(noModifiers)).toEqual([]);
     });
 
-    it('비 올 때 우산 배지', () => {
+    it('비 올 때 비 배지 (IconComponent + colorClass)', () => {
       const badges = getModifierBadges({ ...noModifiers, isRainy: true });
       expect(badges).toHaveLength(1);
-      expect(badges[0]).toMatchObject({ icon: '🌧️', label: '비' });
+      expect(badges[0]?.label).toBe('비');
+      expect(badges[0]?.IconComponent).toBeDefined();
+      expect(badges[0]?.colorClass).toContain('blue');
     });
 
     it('눈 올 때 눈 배지', () => {
       const badges = getModifierBadges({ ...noModifiers, isSnowy: true });
       expect(badges).toHaveLength(1);
-      expect(badges[0]).toMatchObject({ icon: '❄️', label: '눈' });
+      expect(badges[0]?.label).toBe('눈');
+      expect(badges[0]?.colorClass).toContain('sky');
     });
 
     it('복합 조건 → 여러 배지', () => {
@@ -151,7 +179,8 @@ describe('weatherMapping', () => {
     it('일교차 큼 배지', () => {
       const badges = getModifierBadges({ ...noModifiers, hasLargeTempGap: true });
       expect(badges).toHaveLength(1);
-      expect(badges[0]).toMatchObject({ label: '일교차' });
+      expect(badges[0]?.label).toBe('일교차');
+      expect(badges[0]?.colorClass).toContain('orange');
     });
   });
 });

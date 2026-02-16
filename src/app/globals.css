@@ -58,6 +58,8 @@
   --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
   --animate-shimmer: shimmer 2s linear infinite;
   --animate-bounce-gentle: bounce-gentle 2s ease-in-out infinite;
+  --animate-scale-in: scale-in 0.4s ease-out forwards;
+  --animate-wiggle: wiggle 1.5s ease-in-out infinite;
 }
 
 /* === KEYFRAMES === */
@@ -254,4 +256,77 @@ body {
 
 .text-shadow-sm {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* === PREMIUM UTILITIES === */
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: inherit;
+}
+
+.skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s linear infinite;
+  background-size: 200% 100%;
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px rgba(124, 159, 245, 0.3), 0 0 60px rgba(124, 159, 245, 0.1);
+}
+
+.gradient-border-accent {
+  position: relative;
+}
+
+.gradient-border-accent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.category-card-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.category-card-glow:hover {
+  box-shadow: 0 0 24px rgba(124, 159, 245, 0.2);
+}
+
+/* === NEW KEYFRAMES === */
+
+@keyframes scale-in {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
 }

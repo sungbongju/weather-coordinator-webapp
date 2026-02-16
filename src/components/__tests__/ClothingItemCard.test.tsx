@@ -1,7 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ClothingItemCard } from '../ClothingItemCard';
 import type { ClothingItem } from '@/types/outfit';
+
+// framer-motion mock
+vi.mock('framer-motion', () => ({
+  motion: new Proxy({}, {
+    get: (_target, prop: string) => {
+      return ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
+        const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
+        const Tag = prop as keyof JSX.IntrinsicElements;
+        return <Tag {...rest}>{children}</Tag>;
+      };
+    },
+  }),
+  AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
+}));
 
 const mockItem: ClothingItem = {
   id: 'outer-padding',
@@ -19,9 +33,9 @@ describe('ClothingItemCard', () => {
     expect(screen.getByText('패딩')).toBeInTheDocument();
   });
 
-  it('카테고리 이모지를 표시한다', () => {
-    render(<ClothingItemCard item={mockItem} />);
-    expect(screen.getByText('🧥')).toBeInTheDocument();
+  it('카테고리 아이콘(SVG)을 표시한다', () => {
+    const { container } = render(<ClothingItemCard item={mockItem} />);
+    expect(container.querySelector('svg')).toBeInTheDocument();
   });
 
   it('null 아이템이면 렌더하지 않는다', () => {

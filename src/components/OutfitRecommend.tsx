@@ -2,6 +2,7 @@
 
 import type { OutfitRecommendation, ClothingItem } from '@/types/outfit';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, ShoppingBag } from 'lucide-react';
 import { getTempLabel } from '@/lib/weatherMapping';
 import { ClothingItemCard } from './ClothingItemCard';
 import { OutfitComment } from './OutfitComment';
@@ -15,17 +16,17 @@ interface OutfitRecommendProps {
 function OutfitSkeleton() {
   return (
     <div data-testid="outfit-skeleton" className="glass-card-heavy p-6">
-      <div className="animate-pulse space-y-5">
-        <div className="h-5 w-24 rounded bg-white/20" />
+      <div className="space-y-5">
+        <div className="h-5 w-24 rounded skeleton-shimmer" />
         <div className="flex justify-center gap-5">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-2">
-              <div className="h-20 w-20 rounded-2xl bg-white/10" />
-              <div className="h-3 w-12 rounded bg-white/10" />
+              <div className="h-24 w-24 rounded-3xl skeleton-shimmer" />
+              <div className="h-3 w-12 rounded skeleton-shimmer" />
             </div>
           ))}
         </div>
-        <div className="h-12 rounded-2xl bg-white/10" />
+        <div className="h-12 rounded-2xl skeleton-shimmer" />
       </div>
     </div>
   );
@@ -42,11 +43,12 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 40, scale: 0.8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring' as const, stiffness: 260, damping: 20 },
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 350, damping: 20 },
   },
 };
 
@@ -78,11 +80,14 @@ export function OutfitRecommend({ recommendation, isLoading }: OutfitRecommendPr
       animate="visible"
     >
       {/* 온도 레벨 라벨 */}
-      <motion.div variants={itemVariants}>
-        <p className="text-sm font-semibold text-white/70">오늘의 코디</p>
-        <p className="text-lg font-bold text-white">
-          {getTempLabel(recommendation.tempLevel)}
-        </p>
+      <motion.div variants={itemVariants} className="flex items-center gap-2">
+        <Sparkles size={14} className="text-accent" />
+        <div>
+          <p className="text-xs font-medium text-white/50 uppercase tracking-wider">오늘의 코디</p>
+          <p className="text-2xl font-extrabold text-white">
+            {getTempLabel(recommendation.tempLevel)}
+          </p>
+        </div>
       </motion.div>
 
       {/* 의류 카드 그리드 */}
@@ -94,8 +99,9 @@ export function OutfitRecommend({ recommendation, isLoading }: OutfitRecommendPr
           <motion.div
             key={item.id}
             variants={itemVariants}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ y: -8 }}
             whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring' as const, stiffness: 400, damping: 17 }}
           >
             <ClothingItemCard item={item} />
           </motion.div>
@@ -105,7 +111,14 @@ export function OutfitRecommend({ recommendation, isLoading }: OutfitRecommendPr
       {/* 악세서리 */}
       {recommendation.accessories.length > 0 && (
         <motion.div variants={itemVariants}>
-          <p className="mb-2 text-xs font-medium text-white/50">추천 악세서리</p>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-px flex-1 bg-white/10" />
+            <div className="flex items-center gap-1.5 text-xs font-medium text-white/40 uppercase tracking-wider">
+              <ShoppingBag size={12} />
+              <span>액세서리</span>
+            </div>
+            <div className="h-px flex-1 bg-white/10" />
+          </div>
           <div className="flex flex-wrap justify-center gap-4">
             {recommendation.accessories.map((acc) => (
               <ClothingItemCard key={acc.id} item={acc} />

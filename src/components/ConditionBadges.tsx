@@ -1,5 +1,8 @@
+'use client';
+
 import type { ConditionModifiers } from '@/types/outfit';
 import { getModifierBadges } from '@/lib/weatherMapping';
+import { motion } from 'framer-motion';
 
 interface ConditionBadgesProps {
   modifiers: ConditionModifiers;
@@ -12,14 +15,23 @@ export function ConditionBadges({ modifiers }: ConditionBadgesProps) {
 
   return (
     <div className="flex flex-wrap gap-2">
-      {badges.map((badge) => (
-        <span
+      {badges.map((badge, i) => (
+        <motion.span
           key={badge.label}
-          className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm border border-white/10"
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-sm border ${badge.colorClass}`}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            type: 'spring' as const,
+            stiffness: 500,
+            damping: 25,
+            delay: i * 0.08,
+          }}
+          whileHover={{ scale: 1.1 }}
         >
-          <span>{badge.icon}</span>
+          <badge.IconComponent size={14} />
           <span>{badge.label}</span>
-        </span>
+        </motion.span>
       ))}
     </div>
   );

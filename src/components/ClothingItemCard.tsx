@@ -1,6 +1,9 @@
+'use client';
+
 import type { ClothingItem, Category } from '@/types/outfit';
-import { getCategoryEmoji } from '@/lib/weatherMapping';
+import { getCategoryIcon, getCategoryColor } from '@/lib/weatherMapping';
 import { cn } from '@/lib/cn';
+import { motion } from 'framer-motion';
 
 interface ClothingItemCardProps {
   item: ClothingItem | null;
@@ -18,15 +21,31 @@ const CATEGORY_LABELS: Record<Category, string> = {
 export function ClothingItemCard({ item, className }: ClothingItemCardProps) {
   if (!item) return null;
 
+  const Icon = getCategoryIcon(item.category);
+  const color = getCategoryColor(item.category);
+
   return (
-    <div className={cn('flex flex-col items-center gap-2', className)}>
-      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 shadow-glass-sm transition-transform hover:scale-105">
-        <span className="text-3xl">{getCategoryEmoji(item.category)}</span>
+    <motion.div
+      className={cn('flex flex-col items-center gap-2', className)}
+      whileHover={{ scale: 1.08, y: -4 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring' as const, stiffness: 400, damping: 17 }}
+    >
+      <div
+        className={cn(
+          'flex h-24 w-24 items-center justify-center rounded-3xl',
+          'bg-gradient-to-br backdrop-blur-sm border shadow-glass-sm',
+          'category-card-glow transition-all',
+          color.bg,
+          color.border,
+        )}
+      >
+        <Icon size={36} strokeWidth={1.5} className={color.iconColor} />
       </div>
       <div className="text-center">
         <p className="text-sm font-semibold text-white">{item.name}</p>
         <p className="text-xs text-white/50">{CATEGORY_LABELS[item.category]}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }

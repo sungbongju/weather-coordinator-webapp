@@ -1,6 +1,21 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { WeatherCard } from '../WeatherCard';
 import { mockWeatherMild } from '@/__tests__/fixtures/weatherData';
+
+// framer-motion mock
+vi.mock('framer-motion', () => ({
+  motion: new Proxy({}, {
+    get: (_target, prop: string) => {
+      return ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
+        const { initial, animate, exit, transition, variants, whileHover, whileTap, ...rest } = props;
+        const Tag = prop as keyof JSX.IntrinsicElements;
+        return <Tag {...rest}>{children}</Tag>;
+      };
+    },
+  }),
+  AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
+}));
 
 describe('WeatherCard', () => {
   it('현재 온도를 표시해야 한다', () => {
@@ -35,6 +50,6 @@ describe('WeatherCard', () => {
 
   it('로딩 상태일 때 스켈레톤을 표시해야 한다', () => {
     const { container } = render(<WeatherCard data={null} isLoading />);
-    expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
+    expect(container.querySelector('.skeleton-shimmer')).toBeInTheDocument();
   });
 });
