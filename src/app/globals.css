@@ -2,7 +2,7 @@
 
 /* ============================================
    WeatherFit Design System
-   Glassmorphism + Pastel Theme (Tailwind v4)
+   Glassmorphism + Dark Theme (Tailwind v4)
    ============================================ */
 
 @theme inline {
@@ -20,8 +20,8 @@
   --color-accent-light: #FFE4AE;
 
   /* === SURFACE === */
-  --color-surface: #F8F9FE;
-  --color-surface-card: #FFFFFF;
+  --color-surface: #0B1120;
+  --color-surface-card: #131B2E;
 
   /* === TEMPERATURE LEVEL COLORS === */
   --color-temp-freezing: #7EB4E0;
@@ -33,16 +33,16 @@
   --color-temp-scorching: #F28B82;
 
   /* === TEXT === */
-  --color-text-primary: #1A1D2E;
-  --color-text-secondary: #6B7194;
-  --color-text-muted: #9BA3C2;
+  --color-text-primary: #E8ECF4;
+  --color-text-secondary: #94A3C0;
+  --color-text-muted: #5A6880;
 
   /* === SHADOWS === */
-  --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.15);
-  --shadow-glass-sm: 0 4px 16px rgba(31, 38, 135, 0.1);
-  --shadow-glass-lg: 0 12px 48px rgba(31, 38, 135, 0.2);
-  --shadow-soft: 0 2px 15px rgba(0, 0, 0, 0.05);
-  --shadow-soft-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-glass-sm: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-glass-lg: 0 12px 48px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 2px 15px rgba(0, 0, 0, 0.2);
+  --shadow-soft-md: 0 4px 20px rgba(0, 0, 0, 0.25);
 
   /* === BORDER RADIUS === */
   --radius-4xl: 2rem;
@@ -112,25 +112,26 @@
 /* === CSS VARIABLES FOR WEATHER GRADIENTS === */
 
 :root {
-  --gradient-sunny: linear-gradient(180deg, #87CEEB 0%, #B8E4F0 40%, #FFF8DC 100%);
-  --gradient-partly-cloudy: linear-gradient(180deg, #9BB5D6 0%, #C3CBDB 50%, #E8DFD0 100%);
-  --gradient-cloudy: linear-gradient(180deg, #B0B8C8 0%, #C4C9D8 50%, #D8DCEA 100%);
-  --gradient-rainy: linear-gradient(180deg, #6B83A1 0%, #8A9DB5 50%, #A3B5C8 100%);
-  --gradient-thunder: linear-gradient(180deg, #4A5568 0%, #5C6B7F 50%, #718096 100%);
-  --gradient-snowy: linear-gradient(180deg, #D6E4F0 0%, #E3ECF4 50%, #F0F4F8 100%);
-  --gradient-foggy: linear-gradient(180deg, #C5CDD8 0%, #D5DAE3 50%, #E5E8EE 100%);
+  /* Weather gradients — dark theme */
+  --gradient-sunny: linear-gradient(180deg, #0F2847 0%, #1A3A5C 40%, #1E4D6B 100%);
+  --gradient-partly-cloudy: linear-gradient(180deg, #1A2332 0%, #243040 50%, #2C3A4E 100%);
+  --gradient-cloudy: linear-gradient(180deg, #1E2430 0%, #252D3C 50%, #2E3648 100%);
+  --gradient-rainy: linear-gradient(180deg, #0D1B2A 0%, #1B2838 50%, #263545 100%);
+  --gradient-thunder: linear-gradient(180deg, #0A0E1A 0%, #151B2B 50%, #1E2538 100%);
+  --gradient-snowy: linear-gradient(180deg, #1A2535 0%, #222F42 50%, #2A3850 100%);
+  --gradient-foggy: linear-gradient(180deg, #1A1F2E 0%, #232838 50%, #2B3042 100%);
   --gradient-night-clear: linear-gradient(180deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
   --gradient-night-cloudy: linear-gradient(180deg, #1A1A2E 0%, #233243 50%, #2C3E50 100%);
-  --gradient-default: linear-gradient(135deg, #B3D8F0 0%, #C5B3E6 50%, #FACCE0 100%);
+  --gradient-default: linear-gradient(135deg, #0F1729 0%, #1A1E3A 50%, #251A35 100%);
 
-  /* Temperature-based gradients */
-  --gradient-freezing: linear-gradient(135deg, #7EB4E0 0%, #A5C4E8 50%, #C5B3E6 100%);
-  --gradient-cold: linear-gradient(135deg, #8EC5E8 0%, #A8D0F0 50%, #C5D5E6 100%);
-  --gradient-chilly: linear-gradient(135deg, #9AD4D6 0%, #A8E6CF 50%, #C5E8D4 100%);
-  --gradient-mild: linear-gradient(135deg, #A8DBA8 0%, #C5E8C5 50%, #D4ECD4 100%);
-  --gradient-warm: linear-gradient(135deg, #F5D98E 0%, #FFE4AE 50%, #FFF5BA 100%);
-  --gradient-hot: linear-gradient(135deg, #F5B07A 0%, #FFD3B6 50%, #FFE4C4 100%);
-  --gradient-scorching: linear-gradient(135deg, #F28B82 0%, #FFB3A8 50%, #FFD0C8 100%);
+  /* Temperature gradients — dark theme */
+  --gradient-freezing: linear-gradient(135deg, #0D1F35 0%, #152A45 50%, #1A2550 100%);
+  --gradient-cold: linear-gradient(135deg, #0F2235 0%, #162D48 50%, #1C3555 100%);
+  --gradient-chilly: linear-gradient(135deg, #0F2530 0%, #153530 50%, #1A4038 100%);
+  --gradient-mild: linear-gradient(135deg, #122E1E 0%, #1A3D25 50%, #1F4A2C 100%);
+  --gradient-warm: linear-gradient(135deg, #2A2210 0%, #35280A 50%, #3D3010 100%);
+  --gradient-hot: linear-gradient(135deg, #2E1A0A 0%, #3A1F08 50%, #45250A 100%);
+  --gradient-scorching: linear-gradient(135deg, #2E0F0F 0%, #3A1515 50%, #451818 100%);
 }
 
 /* === BASE STYLES === */
@@ -146,49 +147,49 @@ body {
 /* === GLASSMORPHISM UTILITIES === */
 
 .glass {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .glass-light {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-heavy {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   box-shadow: var(--shadow-glass);
 }
 
 .glass-card-heavy {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 1.5rem;
   box-shadow: var(--shadow-glass-lg);
 }
 
 .glass-button {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
   padding: 0.75rem 1.5rem;
   font-weight: 500;
@@ -196,7 +197,7 @@ body {
 }
 
 .glass-button:hover {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .glass-button:active {
@@ -255,7 +256,7 @@ body {
 }
 
 .text-shadow-sm {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* === PREMIUM UTILITIES === */
