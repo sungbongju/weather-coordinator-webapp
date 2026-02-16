@@ -6,7 +6,7 @@ import type {
   ClothingItem,
   UserPreferences,
 } from '@/types/outfit';
-import { getItemsForTempLevel, getItemById } from './clothingData';
+import { getItemsForTempLevel, getItemById, filterByGender } from './clothingData';
 import { getRandomComment } from './comments';
 
 // === Step 1: 체감온도 → 온도 레벨 분류 ===
@@ -47,11 +47,21 @@ function pickPreferred(items: ClothingItem[], dislikedIds: string[] = []): Cloth
   return preferred.length > 0 ? preferred[0]! : items[0]!;
 }
 
-export function getBaseOutfit(level: TempLevel, dislikedIds: string[] = []): OutfitRecommendation {
-  const outers = getItemsForTempLevel(level, 'OUTER');
-  const tops = getItemsForTempLevel(level, 'TOP');
-  const bottoms = getItemsForTempLevel(level, 'BOTTOM');
-  const shoes = getItemsForTempLevel(level, 'SHOES');
+export function getBaseOutfit(
+  level: TempLevel,
+  dislikedIds: string[] = [],
+  gender: 'M' | 'F' | null = null,
+): OutfitRecommendation {
+  const outersRaw = getItemsForTempLevel(level, 'OUTER');
+  const topsRaw = getItemsForTempLevel(level, 'TOP');
+  const bottomsRaw = getItemsForTempLevel(level, 'BOTTOM');
+  const shoesRaw = getItemsForTempLevel(level, 'SHOES');
+
+  // 성별 필터 적용 (빈 결과 → fallback)
+  const outers = filterByGender(outersRaw, gender).length > 0 ? filterByGender(outersRaw, gender) : outersRaw;
+  const tops = filterByGender(topsRaw, gender).length > 0 ? filterByGender(topsRaw, gender) : topsRaw;
+  const bottoms = filterByGender(bottomsRaw, gender).length > 0 ? filterByGender(bottomsRaw, gender) : bottomsRaw;
+  const shoes = filterByGender(shoesRaw, gender).length > 0 ? filterByGender(shoesRaw, gender) : shoesRaw;
 
   // WARM 이상은 아우터 불필요
   const needsOuter = ['FREEZING', 'COLD', 'CHILLY', 'MILD'].includes(level);
@@ -198,8 +208,9 @@ export function recommendOutfit(
   preferences?: UserPreferences,
 ): OutfitRecommendation {
   const dislikedIds = preferences?.dislikedItemIds ?? [];
+  const gender = preferences?.gender ?? null;
   const tempLevel = getTempLevel(weather.feelsLike);
-  const baseOutfit = getBaseOutfit(tempLevel, dislikedIds);
+  const baseOutfit = getBaseOutfit(tempLevel, dislikedIds, gender);
   const modified = applyConditionModifiers(baseOutfit, weather);
   const safe = applySafetyOverride(modified, weather, dislikedIds);
   safe.comment = getRandomComment(tempLevel);

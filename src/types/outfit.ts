@@ -23,6 +23,9 @@ export const CATEGORIES: Category[] = [
   'OUTER', 'TOP', 'BOTTOM', 'SHOES', 'ACCESSORY',
 ];
 
+/** 성별 구분 */
+export type Gender = 'M' | 'F' | 'unisex';
+
 /** 개별 의류 아이템 */
 export interface ClothingItem {
   id: string;
@@ -32,6 +35,7 @@ export interface ClothingItem {
   imageUrl: string;                 // "/assets/clothing/outer/puffer.webp"
   tempLevels: TempLevel[];          // 이 옷이 적합한 온도 레벨들
   tags: string[];                   // ["방한", "캐주얼"]
+  gender: Gender;                   // 성별 분류
 }
 
 /** 조건 수정자 — 어떤 특수 조건이 적용되었는지 */
@@ -60,6 +64,7 @@ export interface OutfitRecommendation {
 /** 사용자 의류 선호도 */
 export interface UserPreferences {
   dislikedItemIds: string[];
+  gender: 'M' | 'F' | null;        // null = 필터 없음
 }
 
 /** 안전 오버라이드 (극한 날씨에서 선호도 무시) */

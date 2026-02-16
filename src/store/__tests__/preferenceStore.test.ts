@@ -3,7 +3,7 @@ import { usePreferenceStore } from '../preferenceStore';
 describe('preferenceStore', () => {
   beforeEach(() => {
     usePreferenceStore.setState({
-      preferences: { dislikedItemIds: [] },
+      preferences: { dislikedItemIds: [], gender: null },
       isPreferencesModalOpen: false,
     });
     localStorage.clear();
@@ -84,5 +84,60 @@ describe('preferenceStore', () => {
     expect(usePreferenceStore.getState().isPreferencesModalOpen).toBe(true);
     usePreferenceStore.getState().closePreferencesModal();
     expect(usePreferenceStore.getState().isPreferencesModalOpen).toBe(false);
+  });
+
+  // === 성별 선호도 ===
+  it('초기 상태: gender는 null이다', () => {
+    expect(usePreferenceStore.getState().preferences.gender).toBeNull();
+  });
+
+  it("setGender('M')은 gender를 M으로 설정한다", () => {
+    usePreferenceStore.getState().setGender('M');
+    expect(usePreferenceStore.getState().preferences.gender).toBe('M');
+  });
+
+  it("setGender(null)은 gender를 null로 설정한다", () => {
+    usePreferenceStore.getState().setGender('F');
+    usePreferenceStore.getState().setGender(null);
+    expect(usePreferenceStore.getState().preferences.gender).toBeNull();
+  });
+
+  it('setGender는 localStorage에 저장한다', () => {
+    usePreferenceStore.getState().setGender('F');
+    const stored = JSON.parse(localStorage.getItem('weatherfit-preferences')!);
+    expect(stored.gender).toBe('F');
+  });
+
+  it('hydrateFromStorage는 gender를 복원한다', () => {
+    localStorage.setItem('weatherfit-preferences', JSON.stringify({
+      dislikedItemIds: [], gender: 'M',
+    }));
+    usePreferenceStore.getState().hydrateFromStorage();
+    expect(usePreferenceStore.getState().preferences.gender).toBe('M');
+  });
+
+  it('hydrateFromStorage는 잘못된 gender를 null로 복원한다', () => {
+    localStorage.setItem('weatherfit-preferences', JSON.stringify({
+      dislikedItemIds: [], gender: 'INVALID',
+    }));
+    usePreferenceStore.getState().hydrateFromStorage();
+    expect(usePreferenceStore.getState().preferences.gender).toBeNull();
+  });
+
+  it('기존 데이터(gender 없음)에서 hydrate하면 gender=null', () => {
+    localStorage.setItem('weatherfit-preferences', JSON.stringify({
+      dislikedItemIds: ['outer-coat'],
+    }));
+    usePreferenceStore.getState().hydrateFromStorage();
+    expect(usePreferenceStore.getState().preferences.gender).toBeNull();
+    expect(usePreferenceStore.getState().preferences.dislikedItemIds).toEqual(['outer-coat']);
+  });
+
+  it('clearAllDislikes는 gender를 유지한다', () => {
+    usePreferenceStore.getState().setGender('F');
+    usePreferenceStore.getState().dislikeItem('outer-coat');
+    usePreferenceStore.getState().clearAllDislikes();
+    expect(usePreferenceStore.getState().preferences.dislikedItemIds).toEqual([]);
+    expect(usePreferenceStore.getState().preferences.gender).toBe('F');
   });
 });

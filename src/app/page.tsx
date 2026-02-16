@@ -13,6 +13,7 @@ import { LocationBar } from '@/components/LocationBar';
 import { ErrorState } from '@/components/ErrorState';
 import { CitySearchModal } from '@/components/CitySearchModal';
 import { PreferencesModal } from '@/components/PreferencesModal';
+import { GenderToggle } from '@/components/GenderToggle';
 import { cn } from '@/lib/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Settings } from 'lucide-react';
@@ -137,14 +138,17 @@ export default function Home() {
                 <Sparkles size={24} className="text-accent" />
               </motion.div>
             </div>
-            <button
-              onClick={openPreferencesModal}
-              aria-label="옷장 설정"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
-              data-testid="preferences-btn"
-            >
-              <Settings size={20} />
-            </button>
+            <div className="flex items-center gap-2">
+              <GenderToggle />
+              <button
+                onClick={openPreferencesModal}
+                aria-label="옷장 설정"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
+                data-testid="preferences-btn"
+              >
+                <Settings size={20} />
+              </button>
+            </div>
           </div>
           <p className="mt-1 text-white/80">오늘 뭐 입지?</p>
         </motion.div>

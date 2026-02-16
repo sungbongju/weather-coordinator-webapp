@@ -5,6 +5,7 @@ const STORAGE_KEY = 'weatherfit-preferences';
 
 const DEFAULT_PREFERENCES: UserPreferences = {
   dislikedItemIds: [],
+  gender: null,
 };
 
 interface PreferenceStore {
@@ -16,6 +17,7 @@ interface PreferenceStore {
   toggleDislike: (itemId: string) => void;
   isDisliked: (itemId: string) => boolean;
   clearAllDislikes: () => void;
+  setGender: (gender: 'M' | 'F' | null) => void;
   openPreferencesModal: () => void;
   closePreferencesModal: () => void;
   hydrateFromStorage: () => void;
@@ -34,16 +36,16 @@ export const usePreferenceStore = create<PreferenceStore>((set, get) => ({
   isPreferencesModalOpen: false,
 
   dislikeItem: (itemId) => {
-    const current = get().preferences.dislikedItemIds;
-    if (current.includes(itemId)) return;
-    const updated = { dislikedItemIds: [...current, itemId] };
+    const current = get().preferences;
+    if (current.dislikedItemIds.includes(itemId)) return;
+    const updated = { ...current, dislikedItemIds: [...current.dislikedItemIds, itemId] };
     set({ preferences: updated });
     persistToStorage(updated);
   },
 
   undislikeItem: (itemId) => {
-    const current = get().preferences.dislikedItemIds;
-    const updated = { dislikedItemIds: current.filter(id => id !== itemId) };
+    const current = get().preferences;
+    const updated = { ...current, dislikedItemIds: current.dislikedItemIds.filter(id => id !== itemId) };
     set({ preferences: updated });
     persistToStorage(updated);
   },
@@ -61,7 +63,13 @@ export const usePreferenceStore = create<PreferenceStore>((set, get) => ({
   },
 
   clearAllDislikes: () => {
-    const updated = { ...DEFAULT_PREFERENCES };
+    const updated = { ...get().preferences, dislikedItemIds: [] };
+    set({ preferences: updated });
+    persistToStorage(updated);
+  },
+
+  setGender: (gender) => {
+    const updated = { ...get().preferences, gender };
     set({ preferences: updated });
     persistToStorage(updated);
   },
@@ -75,7 +83,8 @@ export const usePreferenceStore = create<PreferenceStore>((set, get) => ({
       if (stored) {
         const parsed = JSON.parse(stored) as UserPreferences;
         if (Array.isArray(parsed.dislikedItemIds)) {
-          set({ preferences: parsed });
+          const gender = (parsed.gender === 'M' || parsed.gender === 'F') ? parsed.gender : null;
+          set({ preferences: { dislikedItemIds: parsed.dislikedItemIds, gender } });
         }
       }
     } catch {

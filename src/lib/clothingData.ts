@@ -1,4 +1,4 @@
-import type { ClothingItem, Category, TempLevel } from '@/types/outfit';
+import type { ClothingItem, Category, TempLevel, Gender } from '@/types/outfit';
 
 // === 아우터 (OUTER) — 11종 ===
 const outerItems: ClothingItem[] = [
@@ -10,6 +10,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/long-puffer.webp',
     tempLevels: ['FREEZING'],
     tags: ['방한', '겨울', '캐주얼'],
+    gender: 'unisex',
   },
   {
     id: 'outer-short-puffer',
@@ -19,6 +20,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/short-puffer.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'outer-coat',
@@ -28,6 +30,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/coat.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['포멀', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'outer-trench',
@@ -37,6 +40,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/trench.webp',
     tempLevels: ['CHILLY'],
     tags: ['클래식', '봄가을'],
+    gender: 'unisex',
   },
   {
     id: 'outer-jacket',
@@ -46,6 +50,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/jacket.webp',
     tempLevels: ['CHILLY', 'MILD'],
     tags: ['캐주얼', '봄가을'],
+    gender: 'unisex',
   },
   {
     id: 'outer-cardigan',
@@ -55,6 +60,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/cardigan.webp',
     tempLevels: ['MILD'],
     tags: ['캐주얼', '레이어링'],
+    gender: 'unisex',
   },
   {
     id: 'outer-windbreaker',
@@ -64,6 +70,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/windbreaker.webp',
     tempLevels: ['CHILLY', 'MILD', 'WARM'],
     tags: ['스포티', '바람'],
+    gender: 'unisex',
   },
   {
     id: 'outer-rain-jacket',
@@ -73,6 +80,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/rain-jacket.webp',
     tempLevels: ['CHILLY', 'MILD', 'WARM', 'COLD'],
     tags: ['비', '방수'],
+    gender: 'unisex',
   },
   {
     id: 'outer-long-coat',
@@ -82,6 +90,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/long-coat.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['포멀', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'outer-fleece-jacket',
@@ -91,6 +100,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/fleece-jacket.webp',
     tempLevels: ['COLD', 'CHILLY'],
     tags: ['캐주얼', '방한'],
+    gender: 'unisex',
   },
   {
     id: 'outer-light-cardigan',
@@ -100,6 +110,7 @@ const outerItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/outer/light-cardigan.webp',
     tempLevels: ['MILD', 'WARM'],
     tags: ['캐주얼', '레이어링'],
+    gender: 'unisex',
   },
 ];
 
@@ -113,6 +124,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/heattech.webp',
     tempLevels: ['FREEZING'],
     tags: ['이너', '방한'],
+    gender: 'unisex',
   },
   {
     id: 'top-knit',
@@ -122,6 +134,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/knit.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['따뜻', '캐주얼'],
+    gender: 'unisex',
   },
   {
     id: 'top-sweatshirt',
@@ -131,6 +144,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/sweatshirt.webp',
     tempLevels: ['COLD', 'CHILLY'],
     tags: ['캐주얼', '스포티'],
+    gender: 'unisex',
   },
   {
     id: 'top-long-shirt',
@@ -140,6 +154,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/long-shirt.webp',
     tempLevels: ['CHILLY', 'MILD'],
     tags: ['포멀', '깔끔'],
+    gender: 'unisex',
   },
   {
     id: 'top-long-tee',
@@ -149,6 +164,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/long-tee.webp',
     tempLevels: ['MILD', 'WARM'],
     tags: ['캐주얼', '기본'],
+    gender: 'unisex',
   },
   {
     id: 'top-short-tee',
@@ -158,6 +174,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/short-tee.webp',
     tempLevels: ['WARM', 'HOT'],
     tags: ['캐주얼', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'top-linen-shirt',
@@ -167,6 +184,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/linen-shirt.webp',
     tempLevels: ['HOT'],
     tags: ['시원', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'top-sleeveless',
@@ -176,6 +194,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/sleeveless.webp',
     tempLevels: ['SCORCHING'],
     tags: ['시원', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'top-blouse',
@@ -185,6 +204,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/blouse.webp',
     tempLevels: ['MILD', 'WARM'],
     tags: ['포멀', '여성'],
+    gender: 'F',
   },
   {
     id: 'top-crop',
@@ -194,6 +214,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/crop.webp',
     tempLevels: ['SCORCHING'],
     tags: ['시원', '여름'],
+    gender: 'F',
   },
   {
     id: 'top-turtleneck',
@@ -203,6 +224,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/turtleneck.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '포멀'],
+    gender: 'unisex',
   },
   {
     id: 'top-polo',
@@ -212,6 +234,7 @@ const topItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/top/polo.webp',
     tempLevels: ['WARM', 'HOT'],
     tags: ['캐주얼', '깔끔'],
+    gender: 'unisex',
   },
 ];
 
@@ -225,6 +248,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/fleece-pants.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-jeans',
@@ -234,6 +258,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/jeans.webp',
     tempLevels: ['COLD', 'CHILLY', 'MILD'],
     tags: ['캐주얼', '기본'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-chino',
@@ -243,6 +268,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/chino.webp',
     tempLevels: ['MILD', 'WARM'],
     tags: ['캐주얼', '깔끔'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-slacks',
@@ -252,6 +278,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/slacks.webp',
     tempLevels: ['CHILLY', 'MILD', 'WARM'],
     tags: ['포멀', '깔끔'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-linen',
@@ -261,6 +288,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/linen.webp',
     tempLevels: ['HOT'],
     tags: ['시원', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-shorts',
@@ -270,6 +298,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/shorts.webp',
     tempLevels: ['HOT', 'SCORCHING'],
     tags: ['시원', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-short-skirt',
@@ -279,6 +308,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/short-skirt.webp',
     tempLevels: ['SCORCHING'],
     tags: ['시원', '여름'],
+    gender: 'F',
   },
   {
     id: 'bottom-wool-pants',
@@ -288,6 +318,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/wool-pants.webp',
     tempLevels: ['FREEZING'],
     tags: ['방한', '포멀'],
+    gender: 'unisex',
   },
   {
     id: 'bottom-jogger',
@@ -297,6 +328,7 @@ const bottomItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/bottom/jogger.webp',
     tempLevels: ['CHILLY', 'MILD', 'WARM'],
     tags: ['캐주얼', '스포티'],
+    gender: 'unisex',
   },
 ];
 
@@ -310,6 +342,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/boots.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'shoes-rain-boots',
@@ -319,6 +352,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/rain-boots.webp',
     tempLevels: ['COLD', 'CHILLY', 'MILD'],
     tags: ['비', '방수'],
+    gender: 'unisex',
   },
   {
     id: 'shoes-sneakers',
@@ -328,6 +362,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/sneakers.webp',
     tempLevels: ['CHILLY', 'MILD', 'WARM'],
     tags: ['캐주얼', '기본'],
+    gender: 'unisex',
   },
   {
     id: 'shoes-loafer',
@@ -337,6 +372,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/loafer.webp',
     tempLevels: ['MILD', 'WARM'],
     tags: ['포멀', '깔끔'],
+    gender: 'unisex',
   },
   {
     id: 'shoes-canvas',
@@ -346,6 +382,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/canvas.webp',
     tempLevels: ['WARM', 'HOT'],
     tags: ['캐주얼', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'shoes-sandals',
@@ -355,6 +392,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/sandals.webp',
     tempLevels: ['HOT', 'SCORCHING'],
     tags: ['시원', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'shoes-fur-boots',
@@ -364,6 +402,7 @@ const shoesItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/shoes/fur-boots.webp',
     tempLevels: ['FREEZING'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
 ];
 
@@ -377,6 +416,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/scarf.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'acc-gloves',
@@ -386,6 +426,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/gloves.webp',
     tempLevels: ['FREEZING'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'acc-beanie',
@@ -395,6 +436,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/beanie.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
   {
     id: 'acc-cap',
@@ -404,6 +446,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/cap.webp',
     tempLevels: ['WARM', 'HOT', 'SCORCHING'],
     tags: ['UV차단', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'acc-sunglasses',
@@ -413,6 +456,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/sunglasses.webp',
     tempLevels: ['WARM', 'HOT', 'SCORCHING'],
     tags: ['UV차단', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'acc-umbrella',
@@ -422,6 +466,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/umbrella.webp',
     tempLevels: ['FREEZING', 'COLD', 'CHILLY', 'MILD', 'WARM', 'HOT', 'SCORCHING'],
     tags: ['비', '필수'],
+    gender: 'unisex',
   },
   {
     id: 'acc-mask',
@@ -431,6 +476,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/mask.webp',
     tempLevels: ['FREEZING', 'COLD', 'CHILLY', 'MILD', 'WARM', 'HOT', 'SCORCHING'],
     tags: ['미세먼지', '건강'],
+    gender: 'unisex',
   },
   {
     id: 'acc-sunscreen',
@@ -440,6 +486,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/sunscreen.webp',
     tempLevels: ['WARM', 'HOT', 'SCORCHING'],
     tags: ['UV차단', '여름'],
+    gender: 'unisex',
   },
   {
     id: 'acc-bag',
@@ -449,6 +496,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/bag.webp',
     tempLevels: ['FREEZING', 'COLD', 'CHILLY', 'MILD', 'WARM', 'HOT', 'SCORCHING'],
     tags: ['기본', '캐주얼'],
+    gender: 'unisex',
   },
   {
     id: 'acc-hotpack',
@@ -458,6 +506,7 @@ const accessoryItems: ClothingItem[] = [
     imageUrl: '/assets/clothing/accessory/hotpack.webp',
     tempLevels: ['FREEZING', 'COLD'],
     tags: ['방한', '겨울'],
+    gender: 'unisex',
   },
 ];
 
@@ -488,4 +537,15 @@ export function getItemsForTempLevel(
 /** ID로 아이템 조회 */
 export function getItemById(id: string): ClothingItem | undefined {
   return CLOTHING_ITEMS.find((item) => item.id === id);
+}
+
+/** 성별 필터링: 반대 성별 아이템 제외, unisex는 항상 포함 */
+export function filterByGender(
+  items: ClothingItem[],
+  gender: 'M' | 'F' | null,
+): ClothingItem[] {
+  if (!gender) return items;
+  return items.filter(
+    (item) => item.gender === 'unisex' || item.gender === gender,
+  );
 }

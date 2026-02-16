@@ -50,9 +50,14 @@ vi.mock('@/components/PreferencesModal', () => ({
   },
 }));
 
+// GenderToggle mock
+vi.mock('@/components/GenderToggle', () => ({
+  GenderToggle: () => <div data-testid="gender-toggle">Gender Toggle</div>,
+}));
+
 // preferenceStore mock
 const mockPreferenceStore: Record<string, unknown> = {
-  preferences: { dislikedItemIds: [] },
+  preferences: { dislikedItemIds: [], gender: null },
   isPreferencesModalOpen: false,
   openPreferencesModal: vi.fn(),
   closePreferencesModal: vi.fn(),
@@ -60,6 +65,7 @@ const mockPreferenceStore: Record<string, unknown> = {
   toggleDislike: vi.fn(),
   isDisliked: vi.fn(() => false),
   clearAllDislikes: vi.fn(),
+  setGender: vi.fn(),
 };
 
 vi.mock('@/store/preferenceStore', () => ({
@@ -223,5 +229,11 @@ describe('Home Page', () => {
     render(<Home />);
     fireEvent.click(screen.getByTestId('preferences-btn'));
     expect(mockPreferenceStore.openPreferencesModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('GenderToggle이 헤더에 표시된다', () => {
+    setupDefaultMocks();
+    render(<Home />);
+    expect(screen.getByTestId('gender-toggle')).toBeInTheDocument();
   });
 });

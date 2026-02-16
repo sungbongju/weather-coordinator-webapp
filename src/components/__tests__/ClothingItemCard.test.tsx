@@ -25,6 +25,7 @@ const mockItem: ClothingItem = {
   imageUrl: '/assets/clothing/outer/puffer.webp',
   tempLevels: ['FREEZING', 'COLD'],
   tags: ['방한', '캐주얼'],
+  gender: 'unisex',
 };
 
 describe('ClothingItemCard', () => {

@@ -156,14 +156,14 @@ describe('outfitEngine', () => {
   // === 선호도 반영 추천 ===
   describe('preference-aware recommendation', () => {
     it('싫어하는 아이템은 추천에서 제외된다', () => {
-      const prefs = { dislikedItemIds: ['outer-long-puffer'] };
+      const prefs = { dislikedItemIds: ['outer-long-puffer'], gender: null as 'M' | 'F' | null };
       const result = recommendOutfit(mockWeatherFreezing, prefs);
       expect(result.outer?.id).not.toBe('outer-long-puffer');
     });
 
     it('카테고리의 모든 아이템을 싫어하면 첫 번째로 fallback', () => {
       const allFreezingTopIds = ['top-heattech', 'top-knit', 'top-turtleneck'];
-      const prefs = { dislikedItemIds: allFreezingTopIds };
+      const prefs = { dislikedItemIds: allFreezingTopIds, gender: null as 'M' | 'F' | null };
       const result = recommendOutfit(mockWeatherFreezing, prefs);
       expect(result.top).not.toBeNull();
     });
@@ -181,7 +181,7 @@ describe('outfitEngine', () => {
     });
 
     it('극한 추위가 아닐 때는 안전 오버라이드 없음', () => {
-      const prefs = { dislikedItemIds: ['outer-jacket'] };
+      const prefs = { dislikedItemIds: ['outer-jacket'], gender: null as 'M' | 'F' | null };
       const result = recommendOutfit(mockWeatherMild, prefs);
       expect(result.safetyOverride).toBeUndefined();
     });
@@ -193,7 +193,7 @@ describe('outfitEngine', () => {
     });
 
     it('싫어하는 상의는 대안으로 교체된다', () => {
-      const prefs = { dislikedItemIds: ['top-heattech'] };
+      const prefs = { dislikedItemIds: ['top-heattech'], gender: null as 'M' | 'F' | null };
       const result = recommendOutfit(mockWeatherFreezing, prefs);
       expect(result.top.id).not.toBe('top-heattech');
     });
@@ -223,6 +223,39 @@ describe('outfitEngine', () => {
       const result = recommendOutfit(mockWeatherRainyMild);
       expect(result.modifiers).toBeDefined();
       expect(result.modifiers.isRainy).toBe(true);
+    });
+  });
+
+  // === 성별 필터링 ===
+  describe('gender filtering', () => {
+    it("gender='M'이면 여성 전용 아이템이 추천되지 않는다", () => {
+      const prefs = { dislikedItemIds: [], gender: 'M' as const };
+      const result = recommendOutfit(mockWeatherScorching, prefs);
+      // SCORCHING: top-crop(F)과 bottom-short-skirt(F)이 제외되어야 함
+      expect(result.top.id).not.toBe('top-crop');
+      expect(result.bottom.id).not.toBe('bottom-short-skirt');
+    });
+
+    it("gender='F'이면 여성 전용 아이템도 추천 가능하다", () => {
+      const prefs = { dislikedItemIds: [], gender: 'F' as const };
+      const result = recommendOutfit(mockWeatherScorching, prefs);
+      // F + unisex 모두 가능
+      expect(result.top).not.toBeNull();
+      expect(result.bottom).not.toBeNull();
+    });
+
+    it('gender=null이면 성별 필터 없이 추천한다', () => {
+      const prefs = { dislikedItemIds: [], gender: null };
+      const result = recommendOutfit(mockWeatherScorching, prefs);
+      expect(result.top).not.toBeNull();
+    });
+
+    it('gender + dislikedIds가 동시에 동작한다', () => {
+      // HOT: top-short-tee(unisex), top-linen-shirt(unisex), top-polo(unisex)
+      const prefs = { dislikedItemIds: ['top-short-tee'], gender: 'M' as const };
+      const result = recommendOutfit(mockWeatherHot, prefs);
+      expect(result.top.id).not.toBe('top-short-tee');
+      expect(result.top.gender).not.toBe('F');
     });
   });
 });
