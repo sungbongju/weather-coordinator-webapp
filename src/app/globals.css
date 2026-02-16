@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+/* ============================================
+   WeatherFit Design System
+   Glassmorphism + Pastel Theme (Tailwind v4)
+   ============================================ */
+
+@theme inline {
+  /* === FONTS === */
+  --font-sans: var(--font-pretendard), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-pretendard), var(--font-inter), sans-serif;
+
+  /* === BRAND COLORS === */
+  --color-primary: #7C9FF5;
+  --color-primary-light: #A8C0F7;
+  --color-primary-dark: #5A7FD9;
+  --color-secondary: #F5A3C7;
+  --color-secondary-light: #FACCE0;
+  --color-accent: #FFD07B;
+  --color-accent-light: #FFE4AE;
+
+  /* === SURFACE === */
+  --color-surface: #F8F9FE;
+  --color-surface-card: #FFFFFF;
+
+  /* === TEMPERATURE LEVEL COLORS === */
+  --color-temp-freezing: #7EB4E0;
+  --color-temp-cold: #8EC5E8;
+  --color-temp-chilly: #9AD4D6;
+  --color-temp-mild: #A8DBA8;
+  --color-temp-warm: #F5D98E;
+  --color-temp-hot: #F5B07A;
+  --color-temp-scorching: #F28B82;
+
+  /* === TEXT === */
+  --color-text-primary: #1A1D2E;
+  --color-text-secondary: #6B7194;
+  --color-text-muted: #9BA3C2;
+
+  /* === SHADOWS === */
+  --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.15);
+  --shadow-glass-sm: 0 4px 16px rgba(31, 38, 135, 0.1);
+  --shadow-glass-lg: 0 12px 48px rgba(31, 38, 135, 0.2);
+  --shadow-soft: 0 2px 15px rgba(0, 0, 0, 0.05);
+  --shadow-soft-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  /* === BORDER RADIUS === */
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+
+  /* === ANIMATIONS === */
+  --animate-fade-in-up: fade-in-up 0.5s ease-out forwards;
+  --animate-fade-in: fade-in 0.4s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.4s ease-out forwards;
+  --animate-slide-in-left: slide-in-left 0.4s ease-out forwards;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 20s linear infinite;
+  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-bounce-gentle: bounce-gentle 2s ease-in-out infinite;
+}
+
+/* === KEYFRAMES === */
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-left {
+  0% { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* === CSS VARIABLES FOR WEATHER GRADIENTS === */
+
+:root {
+  --gradient-sunny: linear-gradient(180deg, #87CEEB 0%, #B8E4F0 40%, #FFF8DC 100%);
+  --gradient-partly-cloudy: linear-gradient(180deg, #9BB5D6 0%, #C3CBDB 50%, #E8DFD0 100%);
+  --gradient-cloudy: linear-gradient(180deg, #B0B8C8 0%, #C4C9D8 50%, #D8DCEA 100%);
+  --gradient-rainy: linear-gradient(180deg, #6B83A1 0%, #8A9DB5 50%, #A3B5C8 100%);
+  --gradient-thunder: linear-gradient(180deg, #4A5568 0%, #5C6B7F 50%, #718096 100%);
+  --gradient-snowy: linear-gradient(180deg, #D6E4F0 0%, #E3ECF4 50%, #F0F4F8 100%);
+  --gradient-foggy: linear-gradient(180deg, #C5CDD8 0%, #D5DAE3 50%, #E5E8EE 100%);
+  --gradient-night-clear: linear-gradient(180deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+  --gradient-night-cloudy: linear-gradient(180deg, #1A1A2E 0%, #233243 50%, #2C3E50 100%);
+  --gradient-default: linear-gradient(135deg, #B3D8F0 0%, #C5B3E6 50%, #FACCE0 100%);
+
+  /* Temperature-based gradients */
+  --gradient-freezing: linear-gradient(135deg, #7EB4E0 0%, #A5C4E8 50%, #C5B3E6 100%);
+  --gradient-cold: linear-gradient(135deg, #8EC5E8 0%, #A8D0F0 50%, #C5D5E6 100%);
+  --gradient-chilly: linear-gradient(135deg, #9AD4D6 0%, #A8E6CF 50%, #C5E8D4 100%);
+  --gradient-mild: linear-gradient(135deg, #A8DBA8 0%, #C5E8C5 50%, #D4ECD4 100%);
+  --gradient-warm: linear-gradient(135deg, #F5D98E 0%, #FFE4AE 50%, #FFF5BA 100%);
+  --gradient-hot: linear-gradient(135deg, #F5B07A 0%, #FFD3B6 50%, #FFE4C4 100%);
+  --gradient-scorching: linear-gradient(135deg, #F28B82 0%, #FFB3A8 50%, #FFD0C8 100%);
+}
+
+/* === BASE STYLES === */
+
+body {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === GLASSMORPHISM UTILITIES === */
+
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.glass-heavy {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-card-heavy {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-glass-lg);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.glass-button:active {
+  transform: scale(0.97);
+}
+
+/* === WEATHER GRADIENT BACKGROUNDS === */
+
+.bg-weather-sunny { background: var(--gradient-sunny); }
+.bg-weather-partly-cloudy { background: var(--gradient-partly-cloudy); }
+.bg-weather-cloudy { background: var(--gradient-cloudy); }
+.bg-weather-rainy { background: var(--gradient-rainy); }
+.bg-weather-thunder { background: var(--gradient-thunder); }
+.bg-weather-snowy { background: var(--gradient-snowy); }
+.bg-weather-foggy { background: var(--gradient-foggy); }
+.bg-weather-night-clear { background: var(--gradient-night-clear); }
+.bg-weather-night-cloudy { background: var(--gradient-night-cloudy); }
+.bg-weather-default { background: var(--gradient-default); }
+
+/* Temperature gradient backgrounds */
+.bg-temp-freezing { background: var(--gradient-freezing); }
+.bg-temp-cold { background: var(--gradient-cold); }
+.bg-temp-chilly { background: var(--gradient-chilly); }
+.bg-temp-mild { background: var(--gradient-mild); }
+.bg-temp-warm { background: var(--gradient-warm); }
+.bg-temp-hot { background: var(--gradient-hot); }
+.bg-temp-scorching { background: var(--gradient-scorching); }
+
+/* === UTILITY CLASSES === */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
